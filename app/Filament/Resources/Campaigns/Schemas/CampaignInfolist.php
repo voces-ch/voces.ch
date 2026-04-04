@@ -249,6 +249,7 @@ class CampaignInfolist
                                 ->label('Custom Fields')
                                 ->schema([
                                     TextEntry::make('label')
+                                        ->html()
                                         ->label('Public Label'),
                                     TextEntry::make('name')
                                         ->label('Internal Name')

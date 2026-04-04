@@ -93,11 +93,16 @@ const handleSubmit = async () => {
                 :key="field.name"
                 class="voces-field"
             >
-                <label v-if="field.type !== 'checkbox'" class="voces-label">
-                    {{ field.label }}
-                    <span v-if="field.is_required" class="voces-required"
-                        >*</span
-                    >
+                <label
+                    v-if="field.type !== 'checkbox'"
+                    class="voces-label"
+                    v-html="
+                        field.label +
+                        (field.is_required
+                            ? ' <span class=&quot;voces-required&quot;>*</span>'
+                            : '')
+                    "
+                >
                 </label>
 
                 <textarea
@@ -117,7 +122,10 @@ const handleSubmit = async () => {
                         :required="field.is_required"
                         class="voces-checkbox"
                     />
-                    <span class="voces-checkbox-text">{{ field.label }}</span>
+                    <span
+                        class="voces-checkbox-text"
+                        v-html="field.label"
+                    ></span>
                     <span v-if="field.is_required" class="voces-required"
                         >*</span
                     >

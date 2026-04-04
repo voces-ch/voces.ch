@@ -176,7 +176,7 @@ class CampaignForm
                     Repeater::make('campaignFields')
                         ->relationship()
                         ->schema([
-                            TextInput::make('label')
+                            RichEditor::make('label')
                                 ->label('Public Label')
                                 ->required()
                                 ->helperText('e.g., First Name')
