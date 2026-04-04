@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voces Widget Dev</title>
+</head>
+
+<body>
+    <div id="voces-dev-container"></div>
+
+    <script type="module" src="/src/main.js"></script>
+
+    <script type="module">
+        // In Vite dev mode, we use 'type="module"' to ensure it runs after main.js
+        window.voces.widget({
+            campaignUuid: 'c7439b13-cabe-4daf-8f21-1f1b2980edd6', // Replace with a real UUID from your DB
+            target: '#voces-dev-container',
+            source: 'dev-environment'
+        });
+    </script>
+</body>
+
+</html>

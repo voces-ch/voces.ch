@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Filament\Resources\Campaigns;
+
+use App\Filament\Resources\Campaigns\Pages\CreateCampaign;
+use App\Filament\Resources\Campaigns\Pages\EditCampaign;
+use App\Filament\Resources\Campaigns\Pages\ListCampaigns;
+use App\Filament\Resources\Campaigns\Pages\ViewCampaign;
+use App\Filament\Resources\Campaigns\RelationManagers\CampaignFieldsRelationManager;
+use App\Filament\Resources\Campaigns\RelationManagers\SignaturesRelationManager;
+use App\Filament\Resources\Campaigns\Schemas\CampaignForm;
+use App\Filament\Resources\Campaigns\Schemas\CampaignInfolist;
+use App\Filament\Resources\Campaigns\Tables\CampaignsTable;
+use App\Models\Campaign;
+use BackedEnum;
+use Filament\Facades\Filament;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class CampaignResource extends Resource
+{
+    protected static ?string $model = Campaign::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function form(Schema $schema): Schema
+    {
+        return CampaignForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return CampaignInfolist::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return CampaignsTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            SignaturesRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListCampaigns::route('/'),
+            'create' => CreateCampaign::route('/create'),
+            'view' => ViewCampaign::route('/{record}'),
+            'edit' => EditCampaign::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
+
+    protected static bool $isScopedToTenant = false;
+
+    public static function getEloquentQuery(): Builder
+    {
+        $tenantId = Filament::getTenant()?->id;
+
+        return parent::getEloquentQuery()->where(function (Builder $query) use ($tenantId) {
+            $query->where('organization_id', $tenantId)
+                  ->orWhereHas('campaignPartners', function (Builder $q) use ($tenantId) {
+                      $q->where('organization_id', $tenantId);
+                  });
+        });
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return $record->organization_id === Filament::getTenant()?->id;
+    }
+
+    // Only the Host can delete the campaign
+    public static function canDelete(Model $record): bool
+    {
+        return $record->organization_id === Filament::getTenant()?->id;
+    }
+}
