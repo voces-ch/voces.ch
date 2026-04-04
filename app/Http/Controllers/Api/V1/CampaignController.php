@@ -68,7 +68,7 @@ class CampaignController extends Controller
         }
 
         $validated = $request->validate($rules, [], $customAttributes);
-
+        $validated['payload']['language'] = $locale;
         $identifierValue = $validated['payload'][$uniqueFieldKey] ?? null;
 
         $campaign->signatures()->create([

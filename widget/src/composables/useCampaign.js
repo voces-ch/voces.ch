@@ -8,6 +8,7 @@ export function useCampaign(props) {
     const validationErrors = ref({});
     const serverError = ref(null);
     const isSubmitting = ref(false);
+    console.log("Campaign props:", props);
 
     const fetchCampaign = async () => {
         const baseUrl = import.meta.env.VITE_API_URL;
@@ -48,7 +49,7 @@ export function useCampaign(props) {
         try {
             const baseUrl = import.meta.env.VITE_API_URL;
             const response = await fetch(
-                `${baseUrl}/campaigns/${props.campaignUuid}/signatures?language=${props.lang}`,
+                `${baseUrl}/campaigns/${props.campaignUuid}/signatures?locale=${props.lang}`,
                 {
                     method: "POST",
                     headers: {
