@@ -3,6 +3,7 @@ import { onMounted, toRefs, ref } from "vue";
 import { useTranslations } from "./composables/useTranslations";
 import { useCampaign } from "./composables/useCampaign";
 import ProgressBar from "./components/ProgressBar.vue";
+import { marked } from "marked";
 
 const props = defineProps({
     campaignUuid: { type: String, required: true },
@@ -93,11 +94,16 @@ const handleSubmit = async () => {
                 :key="field.name"
                 class="voces-field"
             >
-                <label v-if="field.type !== 'checkbox'" class="voces-label">
-                    {{ field.label }}
-                    <span v-if="field.is_required" class="voces-required"
-                        >*</span
-                    >
+                <label
+                    v-if="field.type !== 'checkbox'"
+                    class="voces-label"
+                    v-html="
+                        marked.parse(field.label) +
+                        (field.is_required
+                            ? ' <span class=&quot;voces-required&quot;>*</span>'
+                            : '')
+                    "
+                >
                 </label>
 
                 <textarea
@@ -119,7 +125,7 @@ const handleSubmit = async () => {
                     />
                     <span
                         class="voces-checkbox-text"
-                        v-html="field.label"
+                        v-html="marked.parse(field.label)"
                     ></span>
                     <span v-if="field.is_required" class="voces-required"
                         >*</span

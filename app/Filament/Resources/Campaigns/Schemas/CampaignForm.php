@@ -7,6 +7,7 @@ use Closure;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -142,6 +143,7 @@ class CampaignForm
                         ->numeric()
                         ->minValue(1),
                     ])
+                    ->columns(2)
                     ->description('Configure the basic information for your campaign, such as the title, description, and submit button text.')
                     ->collapsible()
                     ->columnSpanFull(),
@@ -176,12 +178,6 @@ class CampaignForm
                     Repeater::make('campaignFields')
                         ->relationship()
                         ->schema([
-                            TextInput::make('label')
-                                ->label('Public Label')
-                                ->required()
-                                ->helperText('e.g., First Name')
-                                ->columnSpanFull()
-                                ->translatable(supportedLocales: self::getLocales($campaign)),
                             TextInput::make('name')
                                 ->label('Internal Key')
                                 ->required()
@@ -199,6 +195,12 @@ class CampaignForm
                                 ->live()
                                 ->afterStateUpdated(fn (Set $set) => $set('default_value', null))
                                 ->required(),
+                            MarkdownEditor::make('label')
+                                ->label('Public Label')
+                                ->required()
+                                ->helperText('e.g., First Name')
+                                ->columnSpanFull()
+                                ->translatable(supportedLocales: self::getLocales($campaign)),
                             TextInput::make('default_value_text')
                                 ->label('Default Value')
                                 ->visible(fn (Get $get) => in_array($get('type'), ['text', 'email', 'number', 'tel']))
