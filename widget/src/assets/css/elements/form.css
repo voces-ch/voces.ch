@@ -1,10 +1,4 @@
 .voces-widget {
-    .voces-label {
-        display: flex !important;
-        column-gap: 0.25em;
-        flex-wrap: wrap;
-    }
-
     .voces-label,
     .voces-checkbox-label {
         a {
