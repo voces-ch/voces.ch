@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\CampaignResource\Widgets;
 
 use App\Models\Campaign;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
@@ -24,12 +26,15 @@ class CampaignEmbedWidget extends Widget implements HasForms
 
     public function mount(): void
     {
+        // check if the current tenant is the host or a partner and set the source accordingly
+        $defaultSource = Filament::getTenant()?->id === $this->record->organization_id ? 'organic' : $this->record->campaignPartners()->where('organization_id', Filament::getTenant()?->id)->value('source_slug') ?? 'organic';
         $this->form->fill([
             'language' => $this->record->languages[0] ?? 'de',
-            'source' => 'organic',
+            'source' => $defaultSource,
             'theme' => 'minimal',
             'version' => 'latest',
             'origin' => null,
+            'showProgress' => true,
         ]);
     }
 
@@ -57,6 +62,9 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ])
                     ->default('minimal')
                     ->live(),
+                Toggle::make("showProgress")
+                    ->label("Show Progress Bar")
+                    ->live(),
                 Select::make("version")
                     ->options(function() {
                         // Get all directories in public/widget/*
@@ -72,6 +80,8 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ->live(),
                 Select::make('source')
                     ->options($sources)
+                    // Only visible to host organization, hide for partners
+                    ->visible(Filament::getTenant()?->id === $this->record->organization_id)
                     ->live(),
                 TextInput::make('origin')
                     ->label('Tracking Origin (Optional)')

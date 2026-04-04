@@ -11,6 +11,7 @@
             $origin = blank($originValue) ? '' : "\n        origin: '{$originValue}',";
             $theme = $data['theme'] ?? 'minimal';
             $version = $data['version'] ?? 'latest';
+            $showProgress = $data['showProgress'] ? "\n        showProgress: true," : '';
 
             $appUrl = config('app.url');
 
@@ -24,7 +25,7 @@
         campaignUuid: '{$uuid}',
         target: '#voces-campaign-widget',
         theme: '{$theme}',
-        lang: '{$lang}',{$source}{$origin}
+        lang: '{$lang}',{$source}{$origin}{$showProgress}
     });
   });
 </script>

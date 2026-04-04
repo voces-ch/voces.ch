@@ -46,13 +46,14 @@ class UsersTable
                     ->action(function (array $data, \Livewire\Component $livewire) {
                         $tenant = Filament::getTenant();
 
-                        $user = User::firstOrCreate(
-                            ['email' => $data['email']],
-                            [
-                                'name' => $data['name'],
-                                'password' => Hash::make(Str::random(24)),
-                            ]
-                        );
+                        $user = User::withoutGlobalScopes()
+                            ->firstOrCreate(
+                                ['email' => $data['email']],
+                                [
+                                    'name' => $data['name'],
+                                    'password' => Hash::make(Str::random(24)),
+                                ]
+                            );
 
                         if ($tenant->users()->where('user_id', $user->id)->exists()) {
                             \Filament\Notifications\Notification::make()
