@@ -26,15 +26,23 @@ class Campaign extends Model
         'slug',
         'uuid',
         'description',
+        'submit_label',
+        'signature_goal',
         'is_active',
         'organization_id',
-        'languages'
+        'languages',
+        'success_type',
+        'success_message',
+        'success_url'
     ];
 
     public array $translatable = [
         'title',
         'slug',
         'description',
+        'submit_label',
+        'success_message',
+        'success_url'
     ];
 
     /**
@@ -76,8 +84,8 @@ class Campaign extends Model
     {
         return $this->signatures()
             // ->where('is_verified', true) // TODO: Only count verified signatures once we have email verification in place
-            ->distinct('email')
-            ->count('email');
+            ->distinct('unique_identifier')
+            ->count('unique_identifier');
     }
 
     public function newUniqueId(): string

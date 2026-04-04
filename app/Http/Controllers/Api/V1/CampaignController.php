@@ -11,17 +11,21 @@ use Illuminate\Validation\Rule;
 
 class CampaignController extends Controller
 {
-    public function show(Campaign $campaign)
+    public function show(Request $request, Campaign $campaign)
     {
+        $locale = $request->query('locale', 'de');
+        app()->setLocale($locale);
         $campaign->load('campaignFields');
         return new CampaignResource($campaign);
     }
 
     public function sign(Request $request, Campaign $campaign)
     {
+        $locale = $request->query('locale', 'de');
+        app()->setLocale($locale);
         $campaign->loadMissing(['campaignFields', 'campaignPartners']);
 
-        $organizationId = $campaign->organization_id; // Default to Host
+        $organizationId = $campaign->organization_id;
         $source = $request->input('source');
 
         if (!empty($source)) {
@@ -36,22 +40,28 @@ class CampaignController extends Controller
 
         $rules = [
             'source' => ['nullable', 'string'],
+            'origin' => ['nullable', 'string', 'max:255'],
             'payload' => ['required', 'array'],
-            'payload.email' => [
-                'required',
-                'email',
-                // Uniqueness now scoped to BOTH the campaign and the specific organization
-                Rule::unique('signatures', 'email')->where(function ($query) use ($campaign, $organizationId) {
-                    return $query->where('campaign_id', $campaign->id)
-                                 ->where('organization_id', $organizationId);
-                }),
-            ],
         ];
-
         $customAttributes = [];
+
+        $uniqueFieldKey = null;
 
         foreach ($campaign->campaignFields as $field) {
             $fieldRules = $field->is_required ? ['required'] : ['nullable'];
+
+            if ($field->is_unique) {
+                $uniqueFieldKey = $field->name;
+                $fieldRules[] = Rule::unique('signatures', 'unique_identifier')
+                    ->where(function ($query) use ($campaign, $organizationId) {
+                        return $query->where('campaign_id', $campaign->id)
+                                     ->where('organization_id', $organizationId);
+                    });
+            }
+
+            if ($field->type === 'email') {
+                $fieldRules[] = 'email';
+            }
 
             $rules["payload.{$field->name}"] = $fieldRules;
             $customAttributes["payload.{$field->name}"] = $field->label;
@@ -59,14 +69,13 @@ class CampaignController extends Controller
 
         $validated = $request->validate($rules, [], $customAttributes);
 
-        $email = $validated['payload']['email'];
-
-        unset($validated['payload']['email']);
+        $identifierValue = $validated['payload'][$uniqueFieldKey] ?? null;
 
         $campaign->signatures()->create([
             'organization_id' => $organizationId,
-            'email' => $email,
+            'unique_identifier' => $identifierValue,
             'payload' => $validated['payload'],
+            'origin' => $validated['origin'] ?? null,
             'is_verified' => false,
             'signed_at' => now(),
         ]);

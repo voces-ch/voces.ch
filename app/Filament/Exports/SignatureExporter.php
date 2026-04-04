@@ -32,8 +32,8 @@ class SignatureExporter extends Exporter
                 ->label('DOI Verified')
                 ->state(fn (Signature $record) => $record->is_verified ? 'Yes' : 'No'),
 
-            ExportColumn::make('email')
-                ->label('Signer Email'),
+            ExportColumn::make('origin')
+                ->label('Origin'),
         ];
 
         $tenantId = Filament::getTenant()?->id;

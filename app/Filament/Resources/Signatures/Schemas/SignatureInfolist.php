@@ -21,29 +21,20 @@ class SignatureInfolist
     {
         return $schema
             ->components([
-                // We define a 3-column grid for desktop displays
                 Grid::make(3)
                     ->schema([
-                        // MAIN CONTENT: Takes up 2 out of 3 columns
                         Flex::make([
                                 Section::make('Submitted Data')
                                     ->description('The exact PII and custom fields provided by the signee.')
                                     ->schema([
-                                        TextEntry::make('email')
-                                            ->label('Signer Email')
-                                            ->helperText('Used for double opt-in verification and to prevent duplicate signatures.')
-                                            ->badge()
-                                            ->color('primary'),
                                         KeyValueEntry::make('payload')
-                                            ->hiddenLabel() // Keeps it clean
+                                            ->hiddenLabel()
                                             ->keyLabel('Field')
                                             ->valueLabel('Submitted Value'),
                                     ]),
                             ])
-                            // Full width on mobile, 2 columns on medium screens and up
                             ->columnSpan(['default' => 2, 'md' => 2]),
 
-                        // META SIDEBAR: Takes up 1 out of 3 columns
                         Tabs::make("Further Info")
                             ->tabs([
                                 Tab::make('Campaign Info')
@@ -59,6 +50,10 @@ class SignatureInfolist
                                             ->default('Organic (Main Page)')
                                             ->badge()
                                             ->color(fn ($state) => $state === 'Organic (Main Page)' ? 'gray' : 'info'),
+
+                                        TextEntry::make('origin')
+                                            ->label('Origin')
+                                            ->badge(),
                                     ]),
 
                                 Tab::make('Verification & Timing')
@@ -73,7 +68,7 @@ class SignatureInfolist
                                     ]),
                             ])
                     ])
-                    ->columnSpanFull(), // The grid itself takes full width, but its children define their own spans
+                    ->columnSpanFull(),
             ]);
     }
 }

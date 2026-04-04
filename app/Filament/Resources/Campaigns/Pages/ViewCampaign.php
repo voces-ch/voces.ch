@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources\Campaigns\Pages;
 
+use App\Filament\Resources\CampaignResource\Widgets\CampaignEmbedWidget;
 use App\Filament\Resources\Campaigns\CampaignResource;
 use App\Models\Campaign;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewCampaign extends ViewRecord
@@ -17,33 +19,51 @@ class ViewCampaign extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('add_language')
-                ->label('Add Language')
+            Action::make('manage_languages')
+                ->label('Manage Languages')
                 ->icon('heroicon-o-language')
+                ->modalHeading('Manage Campaign Languages')
+                ->modalDescription('Select all the languages this campaign should support.')
                 ->form(function (Campaign $record) {
-                    // Find which languages are NOT yet added
-                    $allLocales = ['de' => 'Deutsch', 'fr' => 'Français', 'it' => 'Italiano', 'en' => 'English'];
-                    $currentLocales = $record->languages ?? [];
-                    $availableLocales = array_diff_key($allLocales, array_flip($currentLocales));
+                    $allLocales = [
+                        'de' => 'Deutsch',
+                        'fr' => 'Français',
+                        'it' => 'Italiano',
+                        'en' => 'English'
+                    ];
 
                     return [
-                        Select::make('new_language')
-                            ->label('Select Language')
-                            ->options($availableLocales)
+                        Select::make('languages')
+                            ->label('Supported Languages')
+                            ->multiple()
+                            ->options($allLocales)
+                            ->default($record->languages ?? [])
+                            ->minItems(1)
                             ->required()
                     ];
                 })
                 ->action(function (array $data, Campaign $record, Action $action) {
-                    $languages = $record->languages ?? [];
+                    $record->update([
+                        'languages' => $data['languages']
+                    ]);
 
-                    if (!in_array($data['new_language'], $languages)) {
-                        $languages[] = $data['new_language'];
-                        $record->update(['languages' => $languages]);
-                    }
+                    Notification::make()
+                        ->title('Languages updated')
+                        ->body('Please make sure to translate all campaign content into the selected languages.')
+                        ->success()
+                        ->send();
+                    $action->redirect($this->getResource()::getUrl('edit', ['record' => $record]));
                 })
-                ->visible(fn (Campaign $record) => count($record->languages ?? []) < 4 && $record->organization_id === Filament::getTenant()?->id),
+                ->visible(fn (Campaign $record) => $record->organization_id === Filament::getTenant()?->id),
             EditAction::make()
                 ->visible(fn (Campaign $record): bool => $record->organization_id === Filament::getTenant()?->id),
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            CampaignEmbedWidget::class,
         ];
     }
 }

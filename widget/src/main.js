@@ -1,28 +1,33 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import "./assets/css/app.css";
 
-// 1. Create the initialization function
 const initWidget = (config = {}) => {
-    // 2. Validate the target exists
-    const target = config.target || '#voces-widget'
-    const el = document.querySelector(target)
+    const target = config.target || "#voces-widget";
+    const el = document.querySelector(target);
 
     if (!el) {
         console.error(`Voces Error: Target element "${target}" not found.`);
         return;
     }
 
-    // 3. Initialize the Vue app with the config passed as props
+    const urlParams = new URLSearchParams(window.location.search);
+    const finalSource = urlParams.get("source") || config.source || null;
+    const finalOrigin =
+        urlParams.get("origin") || config.origin || window.location.hostname;
+
     const app = createApp(App, {
         campaignUuid: config.campaignUuid,
-        source: config.source || 'organic'
-    })
+        source: finalSource,
+        origin: finalOrigin,
+        lang: config.lang || "de",
+        theme: config.theme || "minimal",
+        showProgress: config.showProgress || false,
+    });
 
-    // 4. Mount it!
-    app.mount(el)
-}
+    app.mount(el);
+};
 
-// 5. Expose it to the global window object
 window.voces = {
-    widget: initWidget
-}
+    widget: initWidget,
+};

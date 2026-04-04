@@ -6,7 +6,6 @@ use App\Filament\Resources\Campaigns\Pages\CreateCampaign;
 use App\Filament\Resources\Campaigns\Pages\EditCampaign;
 use App\Filament\Resources\Campaigns\Pages\ListCampaigns;
 use App\Filament\Resources\Campaigns\Pages\ViewCampaign;
-use App\Filament\Resources\Campaigns\RelationManagers\CampaignFieldsRelationManager;
 use App\Filament\Resources\Campaigns\RelationManagers\SignaturesRelationManager;
 use App\Filament\Resources\Campaigns\Schemas\CampaignForm;
 use App\Filament\Resources\Campaigns\Schemas\CampaignInfolist;
@@ -32,7 +31,8 @@ class CampaignResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return CampaignForm::configure($schema);
+        $campaign = $schema->getRecord();
+        return CampaignForm::configure($schema, $campaign);
     }
 
     public static function infolist(Schema $schema): Schema
@@ -89,7 +89,6 @@ class CampaignResource extends Resource
         return $record->organization_id === Filament::getTenant()?->id;
     }
 
-    // Only the Host can delete the campaign
     public static function canDelete(Model $record): bool
     {
         return $record->organization_id === Filament::getTenant()?->id;

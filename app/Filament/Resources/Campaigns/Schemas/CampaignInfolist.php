@@ -17,6 +17,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 
@@ -29,16 +30,65 @@ class CampaignInfolist
             ->components([
                 Grid::make(3)
                     ->schema([
-                        Section::make('Details')
-                            ->schema([
-                                TextEntry::make('title'),
-                                TextEntry::make("description")
-                                    ->html()
-                                    ->columnSpanFull(),
+                        Tabs::make('Details')
+                            ->tabs([
+                                Tab::make('General')
+                                    ->schema([
+                                        TextEntry::make('title'),
+                                        TextEntry::make('uuid')
+                                            ->copyable()
+                                            ->label('UUID'),
+                                        TextEntry::make("description")
+                                            ->html()
+                                            ->columnSpanFull(),
+                                    ]),
+                                Tab::make('Success Logic')
+                                    ->schema([
+                                        TextEntry::make('success_type')
+                                            ->label('Success Type')
+                                            ->badge()
+                                            ->color(fn ($state) => match ($state) {
+                                                'message' => 'success',
+                                                'redirect' => 'primary',
+                                                default => 'secondary',
+                                            })
+                                            ->formatStateUsing(fn ($state) => ucfirst($state)),
+                                        TextEntry::make('success_message')
+                                            ->label('Success Message')
+                                            ->html()
+                                            ->visible(fn (Get $get) => $get('success_type') === 'message'),
+                                        TextEntry::make('success_url')
+                                            ->url(fn($state) => $state, true)
+                                            ->formatStateUsing(function($state) {
+                                                if (! $state) {
+                                                    return null;
+                                                }
+                                                $displayUrl = preg_replace('#^https?://#', '', rtrim($state, '/'));
+                                                $displayUrl = preg_replace('#^www\.#', '', $displayUrl);
+                                                return $displayUrl;
+                                            })
+                                            ->weight(FontWeight::Bold)
+                                            ->color('primary')
+                                            ->label('Success URL')
+                                            ->visible(fn (Get $get) => $get('success_type') === 'redirect'),
+                                    ]),
                             ])
                             ->columnSpan(['default' => 2, 'md' => 2]),
                         Tabs::make("Meta")
                             ->tabs([
+                                Tab::make('General Info')
+                                    ->schema([
+                                        TextEntry::make('signature_goal')
+                                            ->label('Signature Goal')
+                                            ->numeric()
+                                            ->placeholder('No goal set'),
+                                        TextEntry::make('slug'),
+                                        TextEntry::make('uuid')
+                                            ->label('UUID'),
+                                        IconEntry::make('is_active')
+                                            ->boolean(),
+                                    ]),
+
                                 Tab::make('Campaign Partners')
                                 ->schema([
                                     RepeatableEntry::make('campaignPartners')
@@ -54,7 +104,7 @@ class CampaignInfolist
                                                 ->color('info'),
                                             Actions::make([
                                                 Action::make('remove_partner')
-                                                    ->label("")
+                                                    ->label("Remove Partner")
                                                     ->icon('heroicon-o-trash')
                                                     ->color('danger')
                                                     ->requiresConfirmation()
@@ -77,10 +127,8 @@ class CampaignInfolist
                                                         return $isHost || $isSelf;
                                                     })
                                                     ->action(function ($record, \Livewire\Component $livewire) {
-                                                        // Delete the CampaignPartner pivot record
                                                         $record->delete();
 
-                                                        // The main Campaign record is attached to the Livewire component
                                                         $livewire->record->unsetRelation('campaignPartners');
                                                         $livewire->dispatch('$refresh');
 
@@ -89,12 +137,14 @@ class CampaignInfolist
                                                             ->success()
                                                             ->send();
                                                     }),
-                                            ])->alignEnd()
+                                            ])
+                                            ->alignEnd()
+                                            ->columnSpanFull()
+                                            ->fullWidth()
                                         ])
-                                        ->columns(3)
+                                        ->columns(1)
                                         ->placeholder('No coalition partners added yet.'),
 
-                                    // The standalone action button at the bottom of the tab
                                     Actions::make([
                                         Action::make('add_partner')
                                             ->label('Attach Partner via UUID')
@@ -172,31 +222,6 @@ class CampaignInfolist
                                     ])->fullWidth(),
                                 ]),
 
-                                Tab::make('Custom Fields')
-                                    ->schema([
-                                        RepeatableEntry::make('campaignFields')
-                                            ->label('Custom Fields')
-                                            ->schema([
-                                                TextEntry::make('label')
-                                                    ->label('Public Label'),
-                                                IconEntry::make('is_required')
-                                                    ->boolean()
-                                                    ->label('Required?'),
-                                            ])
-                                            ->columns(2)
-                                            ->placeholder('-')
-                                            ->columnSpanFull(),
-                                    ]),
-
-                                Tab::make('General Info')
-                                    ->schema([
-                                        TextEntry::make('slug'),
-                                        TextEntry::make('uuid')
-                                            ->label('UUID'),
-                                        IconEntry::make('is_active')
-                                            ->boolean(),
-                                    ]),
-
                                 Tab::make('Organization & Timing')
                                     ->schema([
                                         TextEntry::make('organization.name')
@@ -215,10 +240,48 @@ class CampaignInfolist
                                             ->visible(fn (Campaign $record): bool => $record->trashed()),
                                     ]),
                             ])
-                            // Full width on mobile, 1 column on medium screens and up
                             ->columnSpan(['default' => 3, 'md' => 1]),
                     ])
                     ->columnSpanFull(),
+                    Section::make("Custom Fields")
+                        ->schema([
+                            RepeatableEntry::make('campaignFields')
+                                ->label('Custom Fields')
+                                ->schema([
+                                    TextEntry::make('label')
+                                        ->label('Public Label'),
+                                    TextEntry::make('name')
+                                        ->label('Internal Name')
+                                        ->copyable()
+                                        ->helperText('Used for data exports and integrations. Must be unique.'),
+                                    TextEntry::make('type')
+                                        ->label('Field Type')
+                                        ->badge()
+                                        ->color(fn ($state) => match ($state) {
+                                            'text' => 'primary',
+                                            'email' => 'success',
+                                            'number' => 'warning',
+                                            default => 'secondary',
+                                        })
+                                        ->formatStateUsing(fn ($state) => ucfirst($state)),
+                                    TextEntry::make('default_value')
+                                        ->label('Default Value')
+                                        ->helperText('Optional default value for this field.'),
+                                    IconEntry::make('is_unique')
+                                        ->boolean()
+                                        ->label('Must be Unique?'),
+                                    IconEntry::make('is_required')
+                                        ->boolean()
+                                        ->label('Required?'),
+                                ])
+                                ->columns(2)
+                                ->placeholder('-')
+                                ->columnSpanFull(),
+                        ])
+                        ->description('Custom fields associated with this campaign. These fields will appear on the signup form and be included in exports.')
+                        ->columnSpanFull()
+                        ->collapsed(true)
+                        ->collapsible(),
             ]);
     }
 }

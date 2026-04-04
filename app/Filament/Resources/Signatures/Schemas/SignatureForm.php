@@ -18,22 +18,20 @@ class SignatureForm
             ->components([
                 Section::make('Signature Details')
                     ->schema([
-                        TextInput::make('email')
-                            ->email()
-                            ->label('Signer Email')
-                            ->helperText('Used for double opt-in verification and to prevent duplicate signatures.'),
                         Select::make('campaign_id')
+                            ->disabled()
                             ->relationship('campaign', 'title'),
 
-                        DateTimePicker::make('signed_at'),
+                        DateTimePicker::make('signed_at')
+                            ->disabled(),
 
                         Toggle::make('is_verified')
+                            ->disabled()
                             ->label('Double Opt-In Verified'),
                     ])->columns(2),
 
                 Section::make('Submitted Data')
                     ->schema([
-                        // KeyValue is perfect for displaying flat JSON payloads cleanly
                         KeyValue::make('payload')
                             ->keyLabel('Field')
                             ->valueLabel('Submitted Value')

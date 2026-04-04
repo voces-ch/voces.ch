@@ -18,8 +18,12 @@ class CampaignResource extends JsonResource
             'id' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
-            'total_signatures' => $this->totalSignatures(),
-            // 'goal' => $this->signature_goal, // TODO: Allow organizations to set a signature goal for each campaign and return it here
+            'submit_label' => $this->submit_label,
+            'signature_goal' => $this->signature_goal,
+            'signature_count' => $this->totalSignatures(),
+            'success_type' => $this->success_type,
+            'success_message' => $this->success_message,
+            'success_url' => $this->success_url,
 
             'fields' => $this->campaignFields->map(function ($field) {
                 return [
@@ -27,9 +31,10 @@ class CampaignResource extends JsonResource
                     'label' => $field->label,
                     'type' => $field->type ?? 'text',
                     'is_required' => (bool) $field->is_required,
+                    'default_value' => $field->default_value,
                     'order' => $field->order,
                 ];
-            })->sortBy('order')->values(), // Ensure they are sorted properly!
+            })->sortBy('order')->values(),
         ];
     }
 }

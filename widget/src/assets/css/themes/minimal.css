@@ -1,0 +1,82 @@
+.voces-theme-minimal {
+    /* Form Layout */
+    .voces-form {
+        @apply flex flex-col gap-6;
+    }
+
+    .voces-field {
+        @apply flex flex-col gap-1;
+    }
+
+    /* Typography & Labels */
+    .voces-label {
+        @apply block text-xs font-bold tracking-widest text-stone-500 uppercase;
+    }
+
+    .voces-required {
+        @apply ml-1 text-red-500;
+    }
+
+    /* Inputs & Textareas */
+    .voces-input,
+    .voces-textarea {
+        @apply w-full rounded-none border-b-2 border-stone-900 bg-transparent px-0 py-2 text-stone-900 transition-colors focus:border-black focus:ring-0 focus:outline-none;
+    }
+
+    .voces-textarea {
+        @apply min-h-[100px] resize-y;
+    }
+
+    /* Checkboxes */
+    .voces-checkbox-label {
+        @apply mt-2 flex cursor-pointer items-center gap-3;
+    }
+
+    .voces-checkbox {
+        @apply h-5 w-5 cursor-pointer rounded-sm border-stone-400 accent-black;
+    }
+
+    .voces-checkbox-text {
+        @apply text-sm font-medium text-stone-800;
+    }
+
+    /* Buttons */
+    .voces-button {
+        @apply mt-4 w-full border-2 border-black bg-transparent px-6 py-3 text-sm font-bold tracking-widest text-black uppercase transition-colors hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-50;
+    }
+
+    /* Validation Errors */
+    .voces-validation-error {
+        @apply mt-1 text-xs font-bold text-red-600;
+    }
+
+    /* Server Error Alert */
+    .voces-alert-error {
+        @apply mb-6 flex gap-3 border-l-4 border-red-600 bg-red-50 p-4 text-red-600;
+    }
+
+    .voces-alert-icon-wrapper {
+        @apply shrink-0;
+    }
+
+    .voces-alert-icon {
+        @apply h-5 w-5 text-red-600;
+    }
+
+    .voces-alert-title {
+        @apply text-sm font-bold tracking-wider uppercase;
+    }
+
+    .voces-alert-text {
+        @apply mt-1 text-sm text-stone-700;
+    }
+
+    /* Success Message */
+    .voces-alert-success {
+        @apply border-2 border-black bg-transparent p-8 text-center text-black;
+    }
+
+    .voces-response-message {
+        @apply text-lg font-medium;
+    }
+}

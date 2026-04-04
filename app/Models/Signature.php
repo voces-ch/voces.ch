@@ -24,8 +24,9 @@ class Signature extends Model
         'is_verified',
         'signed_at',
         'campaign_id',
+        'origin',
         'organization_id',
-        'email',
+        'unique_identifier',
     ];
 
     /**
@@ -42,7 +43,7 @@ class Signature extends Model
             'signed_at' => 'timestamp',
             'campaign_id' => 'integer',
             'organization_id' => 'integer',
-            'email' => 'string',
+            'unique_identifier' => 'string',
         ];
     }
 

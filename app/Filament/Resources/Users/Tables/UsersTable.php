@@ -46,16 +46,14 @@ class UsersTable
                     ->action(function (array $data, \Livewire\Component $livewire) {
                         $tenant = Filament::getTenant();
 
-                        // 1. Find or Create the User globally
                         $user = User::firstOrCreate(
                             ['email' => $data['email']],
                             [
                                 'name' => $data['name'],
-                                'password' => Hash::make(Str::random(24)), // Secure random password
+                                'password' => Hash::make(Str::random(24)),
                             ]
                         );
 
-                        // 2. Check if they are already attached to this specific organization
                         if ($tenant->users()->where('user_id', $user->id)->exists()) {
                             \Filament\Notifications\Notification::make()
                                 ->title('User is already in this team.')
@@ -64,10 +62,7 @@ class UsersTable
                             return;
                         }
 
-                        // 3. Attach them via the belongsToMany pivot!
                         $tenant->users()->attach($user->id);
-
-                        // (Optional: Dispatch a Laravel Event here to email them a welcome/password reset link)
 
                         \Filament\Notifications\Notification::make()
                             ->title('Team member added successfully!')

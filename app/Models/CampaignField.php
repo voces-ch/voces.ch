@@ -21,6 +21,8 @@ class CampaignField extends Model
         'label',
         'type',
         'is_required',
+        'is_unique',
+        'default_value',
         'order',
         'campaign_id',
     ];
@@ -39,7 +41,9 @@ class CampaignField extends Model
         return [
             'id' => 'integer',
             'is_required' => 'boolean',
+            'is_unique' => 'boolean',
             'campaign_id' => 'integer',
+            'default_value' => 'string',
         ];
     }
 
