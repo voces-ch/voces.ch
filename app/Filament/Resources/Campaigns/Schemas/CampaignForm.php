@@ -195,6 +195,8 @@ class CampaignForm
                                 ->live()
                                 ->afterStateUpdated(fn (Set $set) => $set('default_value', null))
                                 ->required(),
+                            // Using MarkdownEditor because RichEditor can't be filled programmatically [BUG]
+                            // see https://github.com/filamentphp/filament/issues/17472
                             MarkdownEditor::make('label')
                                 ->label('Public Label')
                                 ->required()
