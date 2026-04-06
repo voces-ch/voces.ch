@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use App\Observers\OrganizationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramsey\Uuid\Uuid;
+use Spatie\Translatable\HasTranslations;
 
+#[ObservedBy([OrganizationObserver::class])]
 class Organization extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, HasTranslations;
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +26,11 @@ class Organization extends Model
         'uuid',
         'name',
         'slug',
+        'default_campaign_fields',
+        'default_campaign_languages',
+        'default_campaign_submit_label',
+        'default_campaign_success_action',
+        'default_campaign_success_message',
         'default_locale',
     ];
 
@@ -35,8 +44,17 @@ class Organization extends Model
         return [
             'id' => 'integer',
             'uuid' => 'string',
+            'default_campaign_fields' => 'array',
+            'default_campaign_languages' => 'array',
+            'default_campaign_submit_label' => 'array',
+            'default_campaign_success_message' => 'array',
         ];
     }
+
+    public array $translatable = [
+        'default_campaign_submit_label',
+        'default_campaign_success_message',
+    ];
 
     public function campaigns(): HasMany
     {

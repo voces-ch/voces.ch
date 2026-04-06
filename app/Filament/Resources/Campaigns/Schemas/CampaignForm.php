@@ -48,47 +48,6 @@ class CampaignForm
         return $tenant->default_locale;
     }
 
-    protected static function getDefaultCampaignFields(){
-        $defaultLocale = self::getDefaultLocale();
-        $labels = [
-            'first_name' => [
-                "de" => 'Vorname',
-                "fr" => 'Prénom',
-                "it" => 'Nome',
-                "en" => 'First Name',
-            ],
-            'last_name' => [
-                "de" => 'Nachname',
-                "fr" => 'Nom de famille',
-                "it" => 'Cognome',
-                "en" => 'Last Name',
-            ],
-            'email' => [
-                "de" => 'E-Mail Adresse',
-                "fr" => 'Adresse e-mail',
-                "it" => 'Indirizzo email',
-                "en" => 'Email Address',
-            ],
-            'zip_code' => [
-                "de" => 'Postleitzahl',
-                "fr" => 'Code postal',
-                "it" => 'CAP',
-                "en" => 'Zip Code',
-            ],
-        ];
-        return array_map(function ($name) use ($labels, $defaultLocale) {
-            return [
-                'name' => $name,
-                'label' => [
-                    $defaultLocale => $labels[$name][$defaultLocale] ?? Str::title(str_replace('_', ' ', $name)),
-                ],
-                'type' => 'text',
-                'is_required' => true,
-                'is_unique' => $name === 'email'
-            ];
-        }, ['first_name', 'last_name', 'email', 'zip_code']);
-    }
-
     protected static function getDefaultSuccessMessage(?Campaign $campaign = null)
     {
         $defaultLocale = self::getDefaultLocale();
@@ -246,7 +205,7 @@ class CampaignForm
                                 ->helperText('Prevents users from signing twice with the same value.'),
                             Hidden::make("default_value"),
                         ])
-                        ->default(self::getDefaultCampaignFields())
+                        ->default(Filament::getTenant()->default_campaign_fields ?? [])
                         ->columns(2)
                         ->orderColumn('order')
                         ->reorderableWithButtons()

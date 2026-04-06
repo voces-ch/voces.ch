@@ -23,7 +23,6 @@ class CampaignEmbedWidget extends Widget implements HasForms
     protected int | string | array $columnSpan = 'full';
 
     public ?array $data = [];
-
     public function mount(): void
     {
         // check if the current tenant is the host or a partner and set the source accordingly
