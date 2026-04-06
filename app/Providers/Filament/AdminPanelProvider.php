@@ -37,6 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->tenantRegistration(RegisterOrganization::class)
             ->tenantProfile(EditOrganizationProfile::class)
             ->login()
+            ->emailVerification()
             ->colors([
                 'primary' => Color::Amber,
             ])
