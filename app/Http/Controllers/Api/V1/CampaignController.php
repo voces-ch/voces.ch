@@ -23,6 +23,12 @@ class CampaignController extends Controller
     {
         $locale = $request->query('locale', 'de');
         app()->setLocale($locale);
+        if (!$campaign->is_active) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('validation.campaign_inactive'),
+            ], 400);
+        }
         $campaign->loadMissing(['campaignFields', 'campaignPartners']);
 
         $organizationId = $campaign->organization_id;

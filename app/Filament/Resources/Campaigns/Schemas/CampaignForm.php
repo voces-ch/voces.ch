@@ -131,8 +131,8 @@ class CampaignForm
                     ])
                     ->collapsible()
                     ->columnSpanFull(),
-                Section::make('Custom Sign-Up Fields')
-                    ->description('Add custom fields to your sign-up form. The "Unique Identifier" field will be used to prevent duplicate sign-ups and must be of type "text" or "email".')
+                Section::make('Custom Campaign Fields')
+                    ->description('Add custom fields to your campaign form. The "Unique Identifier" field will be used to prevent duplicate submissions and must be of type "text" or "email".')
                     ->schema([
                     Repeater::make('campaignFields')
                         ->relationship()

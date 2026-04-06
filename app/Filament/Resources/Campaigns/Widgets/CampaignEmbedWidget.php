@@ -23,6 +23,31 @@ class CampaignEmbedWidget extends Widget implements HasForms
     protected int | string | array $columnSpan = 'full';
 
     public ?array $data = [];
+
+    protected static function getAllVersions(): array
+    {
+        // Get all directories in public/widget/* ordered by modified time that are not «latest»
+        $directories = glob(public_path('widget/*'), GLOB_ONLYDIR);
+        $directories = array_filter($directories, function ($dir) {
+            return basename($dir) !== 'latest';
+        });
+        usort($directories, function ($a, $b) {
+            return filemtime($b) - filemtime($a);
+        });
+        foreach ($directories as $dir) {
+            $dirName = basename($dir);
+            $options[$dirName] = ucfirst($dirName);
+        }
+        // Add a "latest" option at the end of the list
+        $options = array_merge($options, ["latest" => "Latest"] ?? []);
+        return $options;
+    }
+
+    protected static function getNewestVersionedWidget(): ?string
+    {
+        return array_key_first(array_slice(self::getAllVersions(), 0, 1));
+    }
+
     public function mount(): void
     {
         // check if the current tenant is the host or a partner and set the source accordingly
@@ -31,7 +56,7 @@ class CampaignEmbedWidget extends Widget implements HasForms
             'language' => $this->record->languages[0] ?? 'de',
             'source' => $defaultSource,
             'theme' => 'minimal',
-            'version' => 'latest',
+            'version' => self::getNewestVersionedWidget(),
             'origin' => null,
             'showProgress' => true,
         ]);
@@ -65,17 +90,7 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ->label("Show Progress Bar")
                     ->live(),
                 Select::make("version")
-                    ->options(function() {
-                        // Get all directories in public/widget/*
-                        $directories = glob(public_path('widget/*'), GLOB_ONLYDIR);
-                        // Extract the directory names and use them as options
-                        $options = ["latest" => "Latest"];
-                        foreach ($directories as $dir) {
-                            $dirName = basename($dir);
-                            $options[$dirName] = ucfirst($dirName);
-                        }
-                        return $options;
-                    })
+                    ->options(self::getAllVersions())
                     ->live(),
                 Select::make('source')
                     ->options($sources)
