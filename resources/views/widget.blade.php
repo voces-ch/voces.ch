@@ -126,11 +126,9 @@
             window.voces.widget({
                 campaignUuid: "c7439b13-cabe-4daf-8f21-1f1b2980edd6",
                 target: "#voces-dev-container",
-                source: "silbersee-website",
-                origin: "https://www.silbersee-aktionskomitee.ch",
-                lang: "de",
-                theme: "impact",
-                showProgress: true,
+                lang: '{{ request()->input("lang") ?? "de" }}',
+                theme: '{{ request()->input("theme") ?? "minimal" }}',
+                showProgress: {{ request()->input("showProgress", "true") === "true" ? "true" : "false" }},
             });
         </script>
     </body>
