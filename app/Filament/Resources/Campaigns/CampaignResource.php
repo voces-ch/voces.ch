@@ -6,11 +6,13 @@ use App\Filament\Resources\Campaigns\Pages\CreateCampaign;
 use App\Filament\Resources\Campaigns\Pages\EditCampaign;
 use App\Filament\Resources\Campaigns\Pages\ListCampaigns;
 use App\Filament\Resources\Campaigns\Pages\ViewCampaign;
+use App\Filament\Resources\Campaigns\RelationManagers\IntegrationsRelationManager;
 use App\Filament\Resources\Campaigns\RelationManagers\SignaturesRelationManager;
 use App\Filament\Resources\Campaigns\Schemas\CampaignForm;
 use App\Filament\Resources\Campaigns\Schemas\CampaignInfolist;
 use App\Filament\Resources\Campaigns\Tables\CampaignsTable;
 use App\Models\Campaign;
+use App\Models\Integration;
 use BackedEnum;
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
@@ -49,6 +51,7 @@ class CampaignResource extends Resource
     {
         return [
             SignaturesRelationManager::class,
+            IntegrationsRelationManager::class,
         ];
     }
 
