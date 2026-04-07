@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CampaignResource;
 use App\Http\Resources\SignatureResource;
+use App\Jobs\ProcessSignatureIntegrations;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -77,7 +78,7 @@ class CampaignController extends Controller
         $validated['payload']['language'] = $locale;
         $identifierValue = $validated['payload'][$uniqueFieldKey] ?? null;
 
-        $campaign->signatures()->create([
+        $signature = $campaign->signatures()->create([
             'organization_id' => $organizationId,
             'unique_identifier' => $identifierValue,
             'payload' => $validated['payload'],
@@ -86,11 +87,13 @@ class CampaignController extends Controller
             'signed_at' => now(),
         ]);
 
+        ProcessSignatureIntegrations::dispatch($signature);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Signature captured successfully.',
             'requires_verification' => true,
-            'signature' => new SignatureResource($campaign->signatures()->latest()->first()),
+            'signature' => new SignatureResource($signature),
         ], 201);
     }
 }

@@ -88,6 +88,11 @@ class Campaign extends Model
             ->count('unique_identifier');
     }
 
+    public function integrations(): HasMany
+    {
+        return $this->hasMany(Integration::class);
+    }
+
     public function newUniqueId(): string
     {
         return (string) Uuid::uuid4();
