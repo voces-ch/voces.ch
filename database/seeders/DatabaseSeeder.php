@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $hostUser = User::firstOrCreate(
-            ['email' => 'dev@voces.lndo.site'],
+            ['email' => 'dev@voces.ch'],
             [
                 'name' => 'Host User',
                 'password' => Hash::make('password'),
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $partnerUser = User::firstOrCreate(
-            ['email' => 'partner@voces.lndo.site'],
+            ['email' => 'partner@voces.ch'],
             [
                 'name' => 'Partner User',
                 'password' => Hash::make('password'),
@@ -159,12 +159,15 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
+        $this->command->info('Seeding development environment and partnership with Signatures...');
+        $this->call(SignatureSeeder::class);
+
         $this->command->info('Dev environment and partnerships seeded successfully! 🚀');
         $this->command->table(
             ['Role', 'Login', 'Password', 'Partner Source Slug'],
             [
-                ['Host', 'dev@voces.lndo.site', 'password', 'N/A'],
-                ['Partner', 'partner@voces.lndo.site', 'password', 'naturschutz-silbersee'],
+                ['Host', 'dev@voces.ch', 'password', 'N/A'],
+                ['Partner', 'partner@voces.ch', 'password', 'naturschutz-silbersee'],
             ]
         );
     }
