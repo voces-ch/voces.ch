@@ -87,12 +87,6 @@ class CampaignForm
                     TextInput::make('title')
                         ->required()
                         ->translatable(supportedLocales: self::getLocales($campaign)),
-                    TextInput::make('slug')
-                        ->required()
-                        ->translatable(supportedLocales: self::getLocales($campaign)),
-                    RichEditor::make('description')
-                        ->columnSpanFull()
-                        ->translatable(supportedLocales: self::getLocales($campaign)),
                     TextInput::make('submit_label')
                         ->label('Submit Button Text')
                         ->default(fn () => self::getDefaultSubmitButtonText($campaign))

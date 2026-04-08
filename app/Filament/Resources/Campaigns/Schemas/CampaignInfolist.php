@@ -38,9 +38,6 @@ class CampaignInfolist
                                         TextEntry::make('uuid')
                                             ->copyable()
                                             ->label('UUID'),
-                                        TextEntry::make("description")
-                                            ->html()
-                                            ->columnSpanFull(),
                                     ]),
                                 Tab::make('Success Logic')
                                     ->schema([
@@ -82,7 +79,6 @@ class CampaignInfolist
                                             ->label('Signature Goal')
                                             ->numeric()
                                             ->placeholder('No goal set'),
-                                        TextEntry::make('slug'),
                                         TextEntry::make('uuid')
                                             ->label('UUID'),
                                         IconEntry::make('is_active')
