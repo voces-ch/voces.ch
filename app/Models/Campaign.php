@@ -93,6 +93,11 @@ class Campaign extends Model
         return $this->hasMany(Integration::class);
     }
 
+    public function pages()
+    {
+        return $this->hasMany(CampaignPage::class);
+    }
+
     public function newUniqueId(): string
     {
         return (string) Uuid::uuid4();

@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Tenancy\EditOrganizationProfile;
 use App\Filament\Pages\Tenancy\RegisterOrganization;
 use App\Models\Organization;
+use Athphane\FilamentEditorjs\FilamentEditorjsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -55,6 +56,7 @@ class AdminPanelProvider extends PanelProvider
                         'fr' => 'Français',
                         'it' => 'Italiano',
                     ]),
+                FilamentEditorjsPlugin::make(),
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -65,6 +67,11 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile()
             ->databaseNotifications()
+            ->navigationGroups([
+                'Campaigning',
+                "Data",
+                'Settings',
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

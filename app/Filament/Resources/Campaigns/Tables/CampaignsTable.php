@@ -19,15 +19,13 @@ class CampaignsTable
     {
         return $table
             ->columns([
+                IconColumn::make('is_active')
+                    ->boolean(),
                 TextColumn::make('title')
-                    ->searchable(),
-                TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('uuid')
                     ->label('UUID')
                     ->searchable(),
-                IconColumn::make('is_active')
-                    ->boolean(),
                 TextColumn::make('organization.name')
                     ->searchable(),
                 TextColumn::make('created_at')
