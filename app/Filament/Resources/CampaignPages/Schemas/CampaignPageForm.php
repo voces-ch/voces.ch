@@ -68,9 +68,10 @@ class CampaignPageForm
                             ->helperText('The slug is used to generate the URL for this campaign page. It must be unique across all campaign pages – even the ones you didn\'t create.'),
                         Select::make('theme')
                             ->options([
-                                'default' => 'Default',
+                                'minimal' => 'Minimal',
+                                'impact' => 'Impact',
                             ])
-                            ->default('default')
+                            ->default('minimal')
                             ->required(),
                     ])
                     ->columns(2)

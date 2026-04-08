@@ -19,6 +19,7 @@ class CampaignPageResource extends JsonResource
             'slug' => $this->slug,
             'locale' => $this->locale,
             'is_published' => $this->is_published,
+            'theme' => $this->theme,
             'content' => $this->content,
             'campaign_uuid' => $this->campaign->uuid,
         ];
