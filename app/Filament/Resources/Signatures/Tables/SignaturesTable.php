@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Signatures\Tables;
 
 use App\Filament\Exports\SignatureExporter;
+use App\Models\Organization;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -10,10 +11,12 @@ use Filament\Actions\ExportAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Facades\Filament;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class SignaturesTable
 {
@@ -59,6 +62,18 @@ class SignaturesTable
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary'),
             ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $tenantId = Filament::getTenant()?->id;
+                $query->where(function ($query) use ($tenantId) {
+
+                        $query->where('organization_id', $tenantId)
+
+                            ->orWhereHas('campaign', function ($campaignQuery) use ($tenantId) {
+                                $campaignQuery->where('organization_id', $tenantId)
+                                                ->where('is_data_pooled', true);
+                            });
+                    });
+            })
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

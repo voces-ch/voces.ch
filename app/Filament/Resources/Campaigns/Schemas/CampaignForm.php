@@ -6,6 +6,7 @@ use App\Filament\Helpers\LocaleHelper;
 use App\Filament\Schemas\Shared\CampaignFieldSchema;
 use App\Models\Campaign;
 use Closure;
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -15,6 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 class CampaignForm
@@ -40,6 +42,37 @@ class CampaignForm
                         ->label('Signature Goal')
                         ->numeric()
                         ->minValue(1),
+                    Toggle::make('is_data_pooled')
+                        ->label('Pool Campaign Data')
+                        ->helperText('If enabled, you (the Host) will have access to all signee data collected by your Partners.')
+                        ->default(false)
+                        ->disabled()
+                        ->dehydrated()
+                        ->columnSpanFull()
+                        ->hintActions([
+                            Action::make('enable_pooling')
+                                ->label('Enable Pooling')
+                                ->icon('heroicon-m-lock-open')
+                                ->color('danger')
+                                ->visible(fn (Get $get) => ! $get('is_data_pooled'))
+                                ->requiresConfirmation()
+                                ->modalHeading('Legal Responsibility Warning')
+                                ->modalDescription('By enabling this, you are breaking the data silo. It is your strict responsibility to ensure that supporters who sign through your partners\' forms are explicitly informed in their privacy policy that you (the Host) will also receive their data. Are you sure you want to proceed?')
+                                ->modalSubmitActionLabel('I Understand, Enable Pooling')
+                                ->action(function (Set $set) {
+                                    $set('is_data_pooled', true);
+                                }),
+
+                            Action::make('disable_pooling')
+                                ->label('Disable Pooling')
+                                ->icon('heroicon-m-lock-closed')
+                                ->color('warning')
+                                ->visible(fn (Get $get) => $get('is_data_pooled'))
+                                ->action(function (Set $set) {
+                                    $set('is_data_pooled', false);
+                                }),
+
+                        ])
                     ])
                     ->columns(2)
                     ->description('Configure the basic information for your campaign, such as the title, description, and submit button text.')

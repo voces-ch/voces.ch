@@ -11,6 +11,7 @@ use App\Filament\Resources\Signatures\Schemas\SignatureInfolist;
 use App\Filament\Resources\Signatures\Tables\SignaturesTable;
 use App\Models\Signature;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -25,6 +26,8 @@ class SignatureResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;
     protected static string|UnitEnum|null $navigationGroup = 'Data';
+
+    protected static bool $isScopedToTenant = false;
 
     protected static ?string $recordTitleAttribute = 'uuid';
 
@@ -66,5 +69,19 @@ class SignatureResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        $tenantId = Filament::getTenant()?->id;
+
+        return parent::getGlobalSearchEloquentQuery()
+            ->where(function ($query) use ($tenantId) {
+                $query->where('organization_id', $tenantId)
+                    ->orWhereHas('campaign', function ($campaignQuery) use ($tenantId) {
+                        $campaignQuery->where('organization_id', $tenantId)
+                                    ->where('is_data_pooled', true);
+                    });
+            });
     }
 }

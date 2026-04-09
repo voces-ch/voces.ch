@@ -30,6 +30,7 @@ class Campaign extends Model
         'signature_goal',
         'is_active',
         'organization_id',
+        'is_data_pooled',
         'languages',
         'success_type',
         'success_message',
@@ -56,6 +57,7 @@ class Campaign extends Model
             'id' => 'integer',
             'is_active' => 'boolean',
             'organization_id' => 'integer',
+            'is_data_pooled' => 'boolean',
             'languages' => 'array'
         ];
     }

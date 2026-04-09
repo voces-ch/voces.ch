@@ -38,7 +38,18 @@ class CampaignInfolist
                                         TextEntry::make('uuid')
                                             ->copyable()
                                             ->label('UUID'),
-                                    ]),
+                                        TextEntry::make('signature_goal')
+                                            ->label('Signature Goal')
+                                            ->numeric()
+                                            ->placeholder('No goal set'),
+                                        IconEntry::make('is_active')
+                                            ->boolean()
+                                            ->label('Active'),
+                                        IconEntry::make('is_data_pooled')
+                                            ->boolean()
+                                            ->label('Data Pooled?'),
+                                    ])
+                                    ->columns(2),
                                 Tab::make('Success Logic')
                                     ->schema([
                                         TextEntry::make('success_type')
@@ -73,18 +84,6 @@ class CampaignInfolist
                             ->columnSpan(['default' => 2, 'md' => 2]),
                         Tabs::make("Meta")
                             ->tabs([
-                                Tab::make('General Info')
-                                    ->schema([
-                                        TextEntry::make('signature_goal')
-                                            ->label('Signature Goal')
-                                            ->numeric()
-                                            ->placeholder('No goal set'),
-                                        TextEntry::make('uuid')
-                                            ->label('UUID'),
-                                        IconEntry::make('is_active')
-                                            ->boolean(),
-                                    ]),
-
                                 Tab::make('Campaign Partners')
                                 ->schema([
                                     RepeatableEntry::make('campaignPartners')
