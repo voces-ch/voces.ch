@@ -53,7 +53,7 @@ class CampaignForm
                             Action::make('enable_pooling')
                                 ->label('Enable Pooling')
                                 ->icon('heroicon-m-lock-open')
-                                ->color('danger')
+                                ->color('warning')
                                 ->visible(fn (Get $get) => ! $get('is_data_pooled'))
                                 ->requiresConfirmation()
                                 ->modalHeading('Legal Responsibility Warning')
@@ -66,7 +66,7 @@ class CampaignForm
                             Action::make('disable_pooling')
                                 ->label('Disable Pooling')
                                 ->icon('heroicon-m-lock-closed')
-                                ->color('warning')
+                                ->color('danger')
                                 ->visible(fn (Get $get) => $get('is_data_pooled'))
                                 ->action(function (Set $set) {
                                     $set('is_data_pooled', false);
