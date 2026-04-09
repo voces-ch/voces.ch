@@ -25,6 +25,7 @@ class CampaignField extends Model
         'default_value',
         'order',
         'campaign_id',
+        'target_organization_ids',
     ];
 
     public array $translatable = [
@@ -44,6 +45,7 @@ class CampaignField extends Model
             'is_unique' => 'boolean',
             'campaign_id' => 'integer',
             'default_value' => 'string',
+            'target_organization_ids' => 'array',
         ];
     }
 

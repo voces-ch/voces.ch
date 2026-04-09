@@ -2,78 +2,23 @@
 
 namespace App\Filament\Resources\Campaigns\Schemas;
 
+use App\Filament\Helpers\LocaleHelper;
+use App\Filament\Schemas\Shared\CampaignFieldSchema;
 use App\Models\Campaign;
 use Closure;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class CampaignForm
 {
-    protected static function getLocales(?Campaign $campaign = null)
-    {
-        if (!$campaign) {
-            $tenant = Filament::getTenant();
-            $defaultLocale = $tenant->default_locale ?? 'de';
-            return array_map(fn ($locale) => $locale['native'], array_intersect_key([
-                'de' => ['native' => 'Deutsch'],
-                'fr' => ['native' => 'Français'],
-                'it' => ['native' => 'Italiano'],
-                'en' => ['native' => 'English'],
-            ], array_flip([$defaultLocale])));
-        }
-
-        return array_map(fn ($locale) => $locale['native'], array_intersect_key([
-            'de' => ['native' => 'Deutsch'],
-            'fr' => ['native' => 'Français'],
-            'it' => ['native' => 'Italiano'],
-            'en' => ['native' => 'English'],
-        ], array_flip($campaign->languages ?? [])));
-    }
-
-    protected static function getDefaultLocale(){
-        $tenant = Filament::getTenant();
-        return $tenant->default_locale;
-    }
-
-    protected static function getDefaultSuccessMessage(?Campaign $campaign = null)
-    {
-        $defaultLocale = self::getDefaultLocale();
-        $messages = [
-            'de' => '<h1>Vielen Dank für Ihre Unterstützung!</h1><p>Ihre Unterschrift wurde erfolgreich erfasst.</p>',
-            'fr' => '<h1>Merci pour votre soutien !</h1><p>Votre signature a été enregistrée avec succès.</p>',
-            'it' => '<h1>Grazie per il tuo supporto!</h1><p>La tua firma è stata registrata con successo.</p>',
-            'en' => '<h1>Thank you for your support!</h1><p>Your signature has been successfully recorded.</p>',
-        ];
-
-        return $campaign ? ($campaign->success_message[$defaultLocale] ?? $messages[$defaultLocale]) : $messages[$defaultLocale];
-    }
-
-    protected static function getDefaultSubmitButtonText(?Campaign $campaign = null)
-    {
-        $defaultLocale = self::getDefaultLocale();
-        $texts = [
-            'de' => 'Jetzt unterschreiben',
-            'fr' => 'Signez maintenant',
-            'it' => 'Firma ora',
-            'en' => 'Sign Now',
-        ];
-
-        return $campaign ? ($campaign->submit_button_text[$defaultLocale] ?? $texts[$defaultLocale]) : $texts[$defaultLocale];
-    }
-
     public static function configure(Schema $schema, ?Campaign $campaign = null): Schema
     {
         return $schema
@@ -86,11 +31,11 @@ class CampaignForm
                         ->required(),
                     TextInput::make('title')
                         ->required()
-                        ->translatable(supportedLocales: self::getLocales($campaign)),
+                        ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
                     TextInput::make('submit_label')
                         ->label('Submit Button Text')
-                        ->default(fn () => self::getDefaultSubmitButtonText($campaign))
-                        ->translatable(supportedLocales: self::getLocales($campaign)),
+                        ->default(fn () => LocaleHelper::getDefaultSubmitButtonText($campaign))
+                        ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
                     TextInput::make('signature_goal')
                         ->label('Signature Goal')
                         ->numeric()
@@ -113,14 +58,14 @@ class CampaignForm
                             ->live(),
                         RichEditor::make('success_message')
                             ->label('Success Message')
-                            ->default(self::getDefaultSuccessMessage($campaign))
-                            ->translatable(supportedLocales: self::getLocales($campaign))
+                            ->default(LocaleHelper::getDefaultSuccessMessage($campaign))
+                            ->translatable(supportedLocales: LocaleHelper::getLocales($campaign))
                             ->visible(fn (Get $get) => $get('success_type') === 'message'),
                         TextInput::make('success_url')
                             ->url()
                             ->label('Success URL')
                             ->helperText('Enter the full URL, including https://')
-                            ->translatable(supportedLocales: self::getLocales($campaign))
+                            ->translatable(supportedLocales: LocaleHelper::getLocales($campaign))
                             ->visible(fn (Get $get) => $get('success_type') === 'redirect')
                     ])
                     ->collapsible()
@@ -130,75 +75,7 @@ class CampaignForm
                     ->schema([
                     Repeater::make('campaignFields')
                         ->relationship()
-                        ->schema([
-                            TextInput::make('name')
-                                ->label('Internal Key')
-                                ->required()
-                                ->helperText('e.g., first_name (No spaces)'),
-                            Select::make('type')
-                                ->options([
-                                    'text' => 'Short Text (Single Line)',
-                                    'textarea' => 'Long Text (Paragraph)',
-                                    'email' => 'Email Address',
-                                    'tel' => 'Phone Number',
-                                    'number' => 'Number',
-                                    'date' => 'Date',
-                                    'checkbox' => 'Checkbox (e.g., Opt-in / Yes/No)',
-                                ])
-                                ->live()
-                                ->afterStateUpdated(fn (Set $set) => $set('default_value', null))
-                                ->required(),
-                            // Using MarkdownEditor because RichEditor can't be filled programmatically [BUG]
-                            // see https://github.com/filamentphp/filament/issues/17472
-                            MarkdownEditor::make('label')
-                                ->label('Public Label')
-                                ->required()
-                                ->helperText('e.g., First Name')
-                                ->columnSpanFull()
-                                ->translatable(supportedLocales: self::getLocales($campaign)),
-                            TextInput::make('default_value_text')
-                                ->label('Default Value')
-                                ->visible(fn (Get $get) => in_array($get('type'), ['text', 'email', 'number', 'tel']))
-                                ->formatStateUsing(fn (Get $get) => $get('default_value'))
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
-
-                            Textarea::make('default_value_textarea')
-                                ->label('Default Value')
-                                ->visible(fn (Get $get) => $get('type') === 'textarea')
-                                ->formatStateUsing(fn (Get $get) => $get('default_value'))
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
-
-                            DatePicker::make('default_value_date')
-                                ->label('Default Value')
-                                ->visible(fn (Get $get) => $get('type') === 'date')
-                                ->formatStateUsing(fn (Get $get) => $get('default_value'))
-                                ->live()
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
-
-                            Toggle::make('default_value_checkbox')
-                                ->label('Checked by default?')
-                                ->visible(fn (Get $get) => $get('type') === 'checkbox')
-                                ->formatStateUsing(fn (Get $get) => $get('default_value') === 'true' || $get('default_value') === '1')
-                                ->live()
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state ? 'true' : 'false'))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
-                            Toggle::make('is_required')
-                                ->inline(false)
-                                ->default(false),
-                            Toggle::make('is_unique')
-                                ->label('Use as Unique Identifier')
-                                ->helperText('Prevents users from signing twice with the same value.'),
-                            Hidden::make("default_value"),
-                        ])
+                        ->schema(CampaignFieldSchema::getFields($campaign))
                         ->default(Filament::getTenant()->default_campaign_fields ?? [])
                         ->columns(2)
                         ->orderColumn('order')
@@ -235,7 +112,7 @@ class CampaignForm
                     ->collapsible()
                     ->columnSpanFull(),
                 Hidden::make("languages")
-                    ->default([self::getDefaultLocale()]),
+                    ->default([LocaleHelper::getDefaultLocale()]),
                 Hidden::make('organization_id')
                     ->default(fn () => Filament::getTenant()?->id)
                     ->required(),

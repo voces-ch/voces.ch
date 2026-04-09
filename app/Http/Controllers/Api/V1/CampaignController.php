@@ -16,7 +16,29 @@ class CampaignController extends Controller
     {
         $locale = $request->query('locale', 'de');
         app()->setLocale($locale);
-        $campaign->load('campaignFields');
+
+        $source = $request->query('source');
+        $campaignPartner = $campaign->campaignPartners()->where('source_slug', $source)->first();
+
+        $isHost = is_null($campaignPartner);
+        $partnerOrgId = $campaignPartner ? $campaignPartner->organization_id : null;
+
+        $campaign->load(['campaignFields' => function ($query) use ($partnerOrgId, $isHost) {
+            $query->where(function ($q) use ($partnerOrgId, $isHost) {
+
+                $q->whereNull('target_organization_ids')
+                ->orWhere('target_organization_ids', '[]');
+
+                if ($isHost) {
+                    $q->orWhereJsonContains('target_organization_ids', 'host');
+                } else {
+                    $q->orWhereJsonContains('target_organization_ids', (string) $partnerOrgId)
+                    ->orWhereJsonContains('target_organization_ids', $partnerOrgId);
+                }
+
+            })->orderBy('order');
+        }]);
+
         return new CampaignResource($campaign);
     }
 

@@ -13,7 +13,7 @@ export function useCampaign(props) {
     const fetchCampaign = async () => {
         const baseUrl = import.meta.env.VITE_API_URL;
         const response = await fetch(
-            `${baseUrl}/campaigns/${props.campaignUuid}?locale=${props.lang}`,
+            `${baseUrl}/campaigns/${props.campaignUuid}?locale=${props.lang}&source=${props.source}`,
         );
         const json = await response.json();
         campaignData.value = json.data;
