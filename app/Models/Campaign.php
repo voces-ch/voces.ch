@@ -97,7 +97,7 @@ class Campaign extends Model
     public function totalSignatures(): int
     {
         return $this->signatures()
-            // ->where('is_verified', true) // TODO: Only count verified signatures once we have email verification in place
+            ->whereNotNull('verified_at')
             ->distinct('unique_identifier')
             ->count('unique_identifier');
     }

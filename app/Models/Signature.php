@@ -89,6 +89,23 @@ class Signature extends Model
         );
     }
 
+    public function isVerified(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (! $this->verified_at) {
+                    return false;
+                }
+
+                if ($this->campaign->is_email_verification_enabled) {
+                    return true;
+                }
+
+                return true;
+            }
+        );
+    }
+
     public function newUniqueId(): string
     {
         return (string) Uuid::uuid4();

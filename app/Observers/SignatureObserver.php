@@ -53,9 +53,8 @@ class SignatureObserver
             return;
         }
 
-        // Check if signature is verified, if so, verify the duplicate as well
         if ($signature->is_verified && ! $duplicate->is_verified) {
-            $duplicate->is_verified = true;
+            $duplicate->verified_at = now();
             $duplicate->saveQuietly();
         }
     }
