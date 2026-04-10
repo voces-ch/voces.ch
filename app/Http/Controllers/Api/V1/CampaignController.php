@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CampaignResource;
 use App\Http\Resources\SignatureResource;
 use App\Jobs\ProcessSignatureIntegrations;
+use App\Mail\VerifySignature;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Mail;
 
 class CampaignController extends Controller
 {
@@ -86,7 +88,6 @@ class CampaignController extends Controller
             $rules["payload.{$field->name}"] = $fieldRules;
             $customAttributes["payload.{$field->name}"] = $field->label;
         }
-
         $validated = $request->validate($rules, [], $customAttributes);
         $validated['payload']['language'] = $locale;
         $identifierValue = $validated['payload'][$uniqueFieldKey] ?? null;
@@ -99,13 +100,22 @@ class CampaignController extends Controller
             'is_verified' => false,
             'signed_at' => now(),
         ]);
+        if ($campaign->is_email_verification_enabled && $campaign->email_verification_field && isset($validated['payload'][$campaign->email_verification_field])) {
+            $signature->verification_token = bin2hex(random_bytes(32));
+            $signature->token_expiration = now()->addHours(48);
+            $signature->save();
+            $to = $validated['payload']['email'] ?? null;
+            Mail::to($to)
+                ->locale($locale)
+                ->send(new VerifySignature($signature));
+        }
 
         ProcessSignatureIntegrations::dispatch($signature);
 
         return response()->json([
             'status' => 'success',
             'message' => 'Signature captured successfully.',
-            'requires_verification' => true,
+            'requires_verification' => $campaign->is_email_verification_enabled,
             'signature' => new SignatureResource($signature),
         ], 201);
     }
