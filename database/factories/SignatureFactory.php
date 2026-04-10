@@ -24,9 +24,8 @@ class SignatureFactory extends Factory
                 "email" => fake()->unique()->safeEmail(),
                 "postal_code" => fake()->postcode(),
             ],
-            'is_verified' => fake()->boolean(),
-            'signed_at' => fake()->dateTime(),
-            // Get the dev campaign and organization from the database, or create them if they don't exist
+            'verified_at' => fake()->boolean(75) ? now() : null,
+            'signed_at' => fake()->dateTimeBetween('-30 days', 'now'),
             'campaign_id' => Campaign::where("uuid", "c7439b13-cabe-4daf-8f21-1f1b2980edd6")->first()->id,
             'organization_id' => Organization::whereIn("id", array_merge([$campaign->organization_id], $partners))->inRandomOrder()->first()->id,
         ];
