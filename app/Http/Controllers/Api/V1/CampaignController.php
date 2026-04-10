@@ -8,6 +8,7 @@ use App\Http\Resources\SignatureResource;
 use App\Jobs\ProcessSignatureIntegrations;
 use App\Mail\VerifySignature;
 use App\Models\Campaign;
+use GrantHolle\Altcha\Rules\ValidAltcha;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Mail;
@@ -37,6 +38,12 @@ class CampaignController extends Controller
 
     public function sign(Request $request, Campaign $campaign)
     {
+        $request->validate([
+            'payload.altcha' => ['required', new ValidAltcha],
+        ], [
+            'payload.altcha.required' => __("Please complete the anti-spam verification."),
+            'payload.altcha.' . ValidAltcha::class => __('The anti-spam verification failed or expired. Please reload the page.'),
+        ]);
         $locale = $request->query('locale', 'de');
         app()->setLocale($locale);
         if (!$campaign->is_active) {

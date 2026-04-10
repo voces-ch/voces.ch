@@ -7,15 +7,21 @@ import fs from "fs";
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, "../", "");
-    const buildEnv = loadEnv(mode, process.cwd(), "");
-    const version = buildEnv.WIDGET_VERSION || "0.0.1";
+    const versionEnv = loadEnv("versioning", process.cwd(), "");
+    const version = versionEnv.WIDGET_VERSION || "0.0.1";
     const widgetRoot = path.resolve(__dirname, "../public/widget");
     const versionedPath = path.join(widgetRoot, version);
     const latestPath = path.join(widgetRoot, "latest");
 
     return {
         plugins: [
-            vue(),
+            vue({
+                template: {
+                    compilerOptions: {
+                        isCustomElement: (tag) => tag.startsWith("altcha-"),
+                    },
+                },
+            }),
             cssInjectedByJsPlugin(),
             tailwindcss(),
             {
@@ -52,6 +58,7 @@ export default defineConfig(({ mode }) => {
             "import.meta.env.VITE_API_URL": JSON.stringify(
                 `${env.APP_URL}/api/v1`,
             ),
+            "import.meta.env.VITE_WIDGET_VERSION": JSON.stringify(version),
         },
         server: {
             host: "0.0.0.0",

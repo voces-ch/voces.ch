@@ -29,5 +29,5 @@ Thumbs.db
 # Ignore files in the /public/widget directory
 /public/widget/
 
-# Ignore ./dpeploy.sh file
-/dpeploy.sh
+# Ignore ./deploy.sh file
+/deploy.sh

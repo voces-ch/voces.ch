@@ -12,6 +12,7 @@ const props = defineProps({
     lang: { type: String, default: "de" },
     theme: { type: String, default: "minimal" },
     showProgress: { type: Boolean, default: false },
+    apiUrl: { type: String, required: true },
 });
 
 const { lang } = toRefs(props);
@@ -31,13 +32,24 @@ const {
 
 const progressBarRef = ref(null);
 
+const isCaptchaSolved = ref(false);
+
 onMounted(async () => {
     await fetchCampaign();
 });
 
+const handleAltchaChange = (event) => {
+    if (event.detail.state === "verified") {
+        formData.value.altcha = event.detail.payload;
+        isCaptchaSolved.value = true;
+    } else {
+        formData.value.altcha = null;
+        isCaptchaSolved.value = false;
+    }
+};
+
 const handleSubmit = async () => {
     const oldCount = campaignData.value.signature_count;
-
     await submitForm(() => {
         campaignData.value.signature_count++;
         if (progressBarRef.value) {
@@ -145,6 +157,20 @@ const handleSubmit = async () => {
                     class="voces-validation-error"
                 >
                     {{ validationErrors[field.name] }}
+                </p>
+            </div>
+
+            <div class="voces-field voces-altcha-wrapper">
+                <altcha-widget
+                    :challengeurl="`${props.apiUrl}/auth/challenge`"
+                    :hidefooter="true"
+                    @statechange="handleAltchaChange"
+                ></altcha-widget>
+                <p
+                    v-if="validationErrors.altcha"
+                    class="voces-validation-error"
+                >
+                    {{ validationErrors.altcha }}
                 </p>
             </div>
 
