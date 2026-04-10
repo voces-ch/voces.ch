@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Observers\SignatureObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
 
+#[ObservedBy(SignatureObserver::class)]
 class Signature extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
@@ -55,6 +59,30 @@ class Signature extends Model
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    public function duplicatedFrom(): BelongsTo
+    {
+        return $this->belongsTo(Signature::class, 'is_duplicate_of')
+            ->withoutGlobalScopes();
+    }
+
+    public function isDuplicate(): bool
+    {
+        return $this->is_duplicate_of !== false;
+    }
+
+    public function source(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->is_duplicate_of) {
+
+                    return $this->duplicatedFrom->organization;
+                }
+                return $this->organization;
+            }
+        );
     }
 
     public function newUniqueId(): string

@@ -16,6 +16,10 @@ return new class extends Migration
                 $table->boolean('is_data_pooled')->default(false)->after('organization_id');
             });
         });
+
+        Schema::table('signatures', function (Blueprint $table) {
+            $table->foreignId('is_duplicate_of')->nullable()->constrained('signatures')->nullOnDelete();
+        });
     }
 
     /**
@@ -25,6 +29,10 @@ return new class extends Migration
     {
         Schema::table('campaigns', function (Blueprint $table) {
             $table->dropColumn('is_data_pooled');
+        });
+
+        Schema::table('signatures', function (Blueprint $table) {
+            $table->dropColumn('is_duplicate_of');
         });
     }
 };

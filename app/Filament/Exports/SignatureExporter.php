@@ -22,8 +22,11 @@ class SignatureExporter extends Exporter
             ExportColumn::make('campaign.title')
                 ->label('Campaign'),
 
-            ExportColumn::make('organization.name')
+            ExportColumn::make('source.name')
                 ->label('Gathered By (Source)'),
+            ExportColumn::make('isDuplicate')
+                ->label('Is Duplicate')
+                ->state(fn (Signature $record) => $record->isDuplicate() ? 'Yes' : 'No'),
 
             ExportColumn::make('signed_at')
                 ->label('Date Signed'),

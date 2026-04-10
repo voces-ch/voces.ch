@@ -14,6 +14,7 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
+use League\Flysystem\Visibility;
 
 class SignatureInfolist
 {
@@ -45,11 +46,16 @@ class SignatureInfolist
                                             ->color('primary')
                                             ->url(fn ($record) => CampaignResource::getUrl('view', ['record' => $record->campaign_id])),
 
-                                        TextEntry::make('organization.name')
+                                        TextEntry::make('source.name')
                                             ->label('Gathered By (Source)')
                                             ->default('Organic (Main Page)')
-                                            ->badge()
-                                            ->color(fn ($state) => $state === 'Organic (Main Page)' ? 'gray' : 'info'),
+                                            ->badge(),
+                                        IconEntry::make('is_duplicate_of')
+                                            ->label('Duplicate')
+                                            ->icon('heroicon-o-document-duplicate')
+                                            ->color('danger')
+                                            ->visible(fn ($record) => $record->is_duplicate_of)
+                                            ->tooltip('This signature was originally gathered by a different source, but because data pooling is enabled on the campaign, it has been imported into the current source as well.'),
 
                                         TextEntry::make('origin')
                                             ->label('Origin')
