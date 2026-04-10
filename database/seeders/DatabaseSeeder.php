@@ -74,7 +74,9 @@ class DatabaseSeeder extends Seeder
                     "de" => 'Jetzt unterschreiben',
                     "fr" => 'Signez maintenant'
                 ],
-                'signature_goal' => 10000,
+                'has_goal' => true,
+                'goal' => 10000,
+                'goal_type' => 'count',
                 "slug" => [
                     "de" => Str::slug('Kein Beton am Silbersee'),
                     "fr" => Str::slug('Pas de béton au Silbersee'),
@@ -144,6 +146,18 @@ class DatabaseSeeder extends Seeder
                 'is_unique' => false,
                 'default_value' => '',
                 'order' => 4
+            ],
+            [
+                'name' => 'pledged_amount',
+                'label' => [
+                    "de" => 'Versprochenes Geld',
+                    "fr" => 'Montant promis'
+                ],
+                'type' => 'number',
+                'is_required' => false,
+                'is_unique' => false,
+                'default_value' => '',
+                'order' => 5
             ],
             [
                 'name' => 'newsletter_opt_in',

@@ -39,16 +39,25 @@ class CampaignInfolist
                                         TextEntry::make('uuid')
                                             ->copyable()
                                             ->label(__('UUID')),
-                                        TextEntry::make('signature_goal')
-                                            ->label(__('Signature Goal'))
-                                            ->numeric()
-                                            ->placeholder('No goal set'),
                                         IconEntry::make('is_active')
                                             ->boolean()
                                             ->label(__('Active')),
                                         IconEntry::make('is_data_pooled')
                                             ->boolean()
                                             ->label(__('Data Pooled?')),
+                                    ])
+                                    ->columns(2),
+                                Tab::make(__('Campaign Goal'))
+                                    ->schema([
+                                        IconEntry::make('has_goal')
+                                            ->boolean()
+                                            ->label(__('Has Goal?')),
+                                        TextEntry::make('goal')
+                                            ->label(__('Goal Target')),
+                                        TextEntry::make('goal_type')
+                                            ->label(__('Goal Type')),
+                                        TextEntry::make('goal_field')
+                                            ->label(__('Goal Field')),
                                     ])
                                     ->columns(2),
                                 Tab::make(__('Success Logic'))
