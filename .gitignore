@@ -25,3 +25,6 @@ Homestead.yaml
 Thumbs.db
 /draft.yaml
 /.blueprint
+
+# Ignore files in the /public/widget directory
+/public/widget/
