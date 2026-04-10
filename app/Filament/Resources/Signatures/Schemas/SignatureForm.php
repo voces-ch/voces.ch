@@ -27,7 +27,7 @@ class SignatureForm
 
                         Toggle::make('is_verified')
                             ->disabled()
-                            ->label('Double Opt-In Verified'),
+                            ->label(__('Double Opt-In Verified')),
                     ])->columns(2),
 
                 Section::make('Submitted Data')

@@ -20,23 +20,29 @@ class CampaignsTable
         return $table
             ->columns([
                 IconColumn::make('is_active')
+                    ->label(__('Active'))
                     ->boolean(),
                 TextColumn::make('title')
+                    ->label(__('Title'))
                     ->searchable(),
                 TextColumn::make('uuid')
-                    ->label('UUID')
+                    ->label(__('UUID'))
                     ->searchable(),
                 TextColumn::make('organization.name')
+                    ->label(__('Organization'))
                     ->searchable(),
                 TextColumn::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
+                    ->label(__('Deleted At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -54,6 +60,8 @@ class CampaignsTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('No campaigns found'))
+            ->emptyStateDescription(__('Get started by creating a new campaign.'));
     }
 }

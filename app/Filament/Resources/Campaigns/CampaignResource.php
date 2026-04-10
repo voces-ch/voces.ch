@@ -35,6 +35,26 @@ class CampaignResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    public static function getModelLabel(): string
+    {
+        return __('Campaign');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Campaigns');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Campaigns');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Campaigning');
+    }
+
     public static function form(Schema $schema): Schema
     {
         $campaign = $schema->getRecord();

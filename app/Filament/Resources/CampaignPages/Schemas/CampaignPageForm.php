@@ -20,15 +20,15 @@ class CampaignPageForm
     {
         return $schema
             ->components([
-                Section::make('Page details')
+                Section::make(__('Page details'))
                     ->schema([
                         Toggle::make('is_published')
-                            ->label('Published')
+                            ->label(__('Published'))
                             ->default(false)
                             ->columnSpanFull()
-                            ->helperText('Only published campaign pages are visible to the public.'),
+                            ->helperText(__('Only published campaign pages are visible to the public.')),
                         Select::make("campaign_id")
-                            ->label('Campaign')
+                            ->label(__('Campaign'))
                             ->options(Filament::getTenant()->campaigns()->pluck('title', 'id'))
                             ->searchable()
                             ->preload()
@@ -43,6 +43,7 @@ class CampaignPageForm
                             })
                             ->required(),
                         Select::make('locale')
+                            ->label(__('Language'))
                             ->options(function(Get $get) {
                                 $campaignId = $get('campaign_id');
                                 if (!$campaignId) {
@@ -65,23 +66,26 @@ class CampaignPageForm
                             ->required(),
                         TextInput::make('slug')
                             ->required()
-                            ->helperText('The slug is used to generate the URL for this campaign page. It must be unique across all campaign pages – even the ones you didn\'t create.'),
+                            ->label(__('Slug'))
+                            ->helperText(__('The slug is used to generate the URL for this campaign page. It must be unique across all campaign pages – even the ones you didn\'t create.')),
                         Select::make('theme')
                             ->options([
                                 'minimal' => 'Minimal',
                                 'impact' => 'Impact',
                             ])
+                            ->label(__('Theme'))
                             ->default('minimal')
                             ->required(),
                     ])
                     ->columns(2)
                     ->collapsible()
                     ->columnSpanFull(),
-                Section::make('Page content')
+                Section::make(__('Page content'))
                     ->schema([
                         EditorjsTextField::make('content')
                             ->label(false)
                             ->required()
+                            ->label(__('Content'))
                             ->placeholder('Start writing here or use / to insert blocks...')
                     ])
                     ->columnSpanFull(),

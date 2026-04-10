@@ -29,6 +29,26 @@ class UserResource extends Resource
 
     protected static UnitEnum|string|null $navigationGroup = 'Settings';
 
+    public static function getModelLabel(): string
+    {
+        return __('User');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Users');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Users');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Settings');
+    }
+
     public static function table(Table $table): Table
     {
         return UsersTable::configure($table);

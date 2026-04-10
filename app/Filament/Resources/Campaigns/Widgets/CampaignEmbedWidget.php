@@ -87,7 +87,7 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ->default('minimal')
                     ->live(),
                 Toggle::make("showProgress")
-                    ->label("Show Progress Bar")
+                    ->label(__('Show Progress Bar'))
                     ->live(),
                 Select::make("version")
                     ->options(self::getAllVersions())
@@ -98,8 +98,8 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ->visible(Filament::getTenant()?->id === $this->record->organization_id)
                     ->live(),
                 TextInput::make('origin')
-                    ->label('Tracking Origin (Optional)')
-                    ->helperText('e.g., homepage, facebook_ad, newsletter')
+                    ->label(__('Tracking Origin (Optional)'))
+                    ->helperText(__('e.g., homepage, facebook_ad, newsletter'))
                     ->live()
                     ->maxLength(255),
             ])

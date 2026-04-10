@@ -35,11 +35,11 @@ class IntegrationsRelationManager extends RelationManager
                 Hidden::make('organization_id')
                     ->default(fn () => Filament::getTenant()?->id),
                 Toggle::make('is_active')
-                    ->label('Active')
+                    ->label(__('Active'))
                     ->default(true)
-                    ->helperText('Disable this integration without deleting it.'),
+                    ->helperText(__('Disable this integration without deleting it.')),
                 Select::make('type')
-                    ->label('Integration Type')
+                    ->label(__('Integration Type'))
                     ->options([
                         'webhook' => 'Webhook',
                         'mailchimp' => 'Mailchimp',
@@ -54,13 +54,13 @@ class IntegrationsRelationManager extends RelationManager
                             ->columnSpanFull()
                             ->schema([
                                 TextInput::make('endpoint_url')
-                                    ->label('Endpoint URL')
+                                    ->label(__('Endpoint URL'))
                                     ->url()
                                     ->required(fn (Get $get) => $get('type') === 'webhook'),
 
                                 TextInput::make('secret_token')
-                                    ->label('Secret Token')
-                                    ->helperText('Optional: We will send this in the headers as X-Voces-Signature.'),
+                                    ->label(__('Secret Token'))
+                                    ->helperText(__('Optional: We will send this in the headers as X-Voces-Signature.')),
                             ])
                             ->columns(2),
                     ]),
@@ -73,14 +73,14 @@ class IntegrationsRelationManager extends RelationManager
                             ->schema([
                                 TextInput::make('api_key')
                                     ->password()
-                                    ->label('API Key')
+                                    ->label(__('API Key'))
                                     ->required(fn (Get $get) => $get('type') === 'mailchimp'),
                                 TextInput::make('list_id')
-                                    ->label('Audience List ID')
+                                    ->label(__('Audience List ID'))
                                     ->required(fn (Get $get) => $get('type') === 'mailchimp'),
                                 Select::make('opt_in_field')
-                                    ->label('Opt-In Checkbox')
-                                    ->helperText('Select the checkbox field that users must check to be added to Mailchimp.')
+                                    ->label(__('Opt-In Checkbox'))
+                                    ->helperText(__('Select the checkbox field that users must check to be added to Mailchimp.'))
                                     ->options(function () {
                                         return $this->getOwnerRecord()
                                             ->campaignFields()
@@ -89,8 +89,8 @@ class IntegrationsRelationManager extends RelationManager
                                     })
                                     ->required(),
                                 KeyValue::make('field_mappings')
-                                    ->label('Field Mappings')
-                                    ->helperText('Map Campaign fields to Mailchimp MERGE fields. For example: "email" => "EMAIL", "first_name" => "FNAME".')
+                                    ->label(__('Field Mappings'))
+                                    ->helperText(__('Map Campaign fields to Mailchimp MERGE fields. For example: "email" => "EMAIL", "first_name" => "FNAME".'))
                                     ->keyLabel('Voces Field')
                                     ->valueLabel('Mailchimp MERGE Field')
                                     ->default([
@@ -129,7 +129,7 @@ class IntegrationsRelationManager extends RelationManager
             ->recordTitleAttribute('type')
             ->columns([
                 IconColumn::make('is_active')
-                    ->label('Active')
+                    ->label(__('Active'))
                     ->boolean()
                     ->sortable(),
                 TextColumn::make('type')
