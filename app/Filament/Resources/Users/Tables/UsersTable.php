@@ -5,10 +5,12 @@ namespace App\Filament\Resources\Users\Tables;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 class UsersTable
@@ -44,18 +46,33 @@ class UsersTable
                         TextInput::make('name')
                             ->required()
                             ->helperText(__('Only used if we need to create a new account for them.')),
+                        Select::make('locale')
+                            ->label(__('Language'))
+                            ->options([
+                                'de' => 'Deutsch',
+                                'fr' => 'Français',
+                                'en' => 'English',
+                                'it' => 'Italiano',
+                            ])
+                            ->default(app()->getLocale()),
                     ])
                     ->action(function (array $data, \Livewire\Component $livewire) {
                         $tenant = Filament::getTenant();
 
                         $user = User::withoutGlobalScopes()
-                            ->firstOrCreate(
+                            ->where('email', $data['email'])
+                            ->first();
+                        if (! $user) {
+                            $user = User::create([
+                                'name' => $data['name'],
+                                'email' => $data['email'],
+                                'locale' => $data['locale'],
+                                'password' => Hash::make(Str::random(16)),
+                            ]);
+                            Password::sendResetLink(
                                 ['email' => $data['email']],
-                                [
-                                    'name' => $data['name'],
-                                    'password' => Hash::make(Str::random(24)),
-                                ]
                             );
+                        }
 
                         if ($tenant->users()->where('user_id', $user->id)->exists()) {
                             \Filament\Notifications\Notification::make()
