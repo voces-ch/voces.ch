@@ -25,12 +25,14 @@ class Signature extends Model
     protected $fillable = [
         'uuid',
         'payload',
-        'is_verified',
         'signed_at',
         'campaign_id',
         'origin',
         'organization_id',
         'unique_identifier',
+        'verified_at',
+        'verification_token',
+        'token_expiration',
     ];
 
     /**
@@ -43,7 +45,9 @@ class Signature extends Model
         return [
             'id' => 'integer',
             'payload' => 'array',
-            'is_verified' => 'boolean',
+            'verified_at' => 'timestamp',
+            'verification_token' => 'string',
+            'token_expiration' => 'datetime',
             'signed_at' => 'timestamp',
             'campaign_id' => 'integer',
             'organization_id' => 'integer',

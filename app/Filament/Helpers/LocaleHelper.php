@@ -45,6 +45,19 @@ class LocaleHelper
         return $campaign ? ($campaign->success_message[$defaultLocale] ?? $messages[$defaultLocale]) : $messages[$defaultLocale];
     }
 
+    public static function getDefaultVerificationSuccessMessage(?Campaign $campaign = null)
+    {
+        $defaultLocale = self::getDefaultLocale();
+        $messages = [
+            'de' => 'Deine E-Mail-Adresse wurde erfolgreich verifiziert und deine Unterschrift ist jetzt gültig!',
+            'fr' => 'Votre adresse e-mail a été vérifiée avec succès et votre signature est maintenant valide !',
+            'it' => 'Il tuo indirizzo email è stato verificato con successo e la tua firma è ora valida!',
+            'en' => 'Your email address has been successfully verified and your signature is now valid!',
+        ];
+
+        return $campaign ? ($campaign->verification_success_message[$defaultLocale] ?? $messages[$defaultLocale]) : $messages[$defaultLocale];
+    }
+
     public static function getDefaultSubmitButtonText(?Campaign $campaign = null)
     {
         $defaultLocale = self::getDefaultLocale();

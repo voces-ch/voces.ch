@@ -34,7 +34,12 @@ class Campaign extends Model
         'languages',
         'success_type',
         'success_message',
-        'success_url'
+        'success_url',
+        'is_email_verification_enabled',
+        'email_verification_field',
+        'verification_success_action',
+        'verification_success_message',
+        'verification_success_url',
     ];
 
     public array $translatable = [
@@ -43,7 +48,9 @@ class Campaign extends Model
         'description',
         'submit_label',
         'success_message',
-        'success_url'
+        'success_url',
+        'verification_success_message',
+        'verification_success_url',
     ];
 
     /**
@@ -58,7 +65,12 @@ class Campaign extends Model
             'is_active' => 'boolean',
             'organization_id' => 'integer',
             'is_data_pooled' => 'boolean',
-            'languages' => 'array'
+            'languages' => 'array',
+            'is_email_verification_enabled' => 'boolean',
+            'email_verification_field' => 'string',
+             'verification_success_action' => 'string',
+             'verification_success_message' => 'array',
+             'verification_success_url' => 'array',
         ];
     }
 

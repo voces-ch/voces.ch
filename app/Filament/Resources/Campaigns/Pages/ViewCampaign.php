@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Campaigns\Pages;
 
-use App\Filament\Resources\CampaignResource\Widgets\CampaignEmbedWidget;
 use App\Filament\Resources\Campaigns\CampaignResource;
+use App\Filament\Resources\Campaigns\Widgets\CampaignEmbedWidget;
 use App\Models\Campaign;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
