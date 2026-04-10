@@ -2,4 +2,5 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
-@source '../../../../resources/views/components/**/*';  /* This! */
+@source '../../../../resources/views/components/**/*';
+@source '../../../../resources/views/auth/**/*';

@@ -25,6 +25,8 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
         'locale',
         'password',
         'organization_id',
+        'email_verified_at',
+        'google_id',
     ];
 
     protected $hidden = [
@@ -42,6 +44,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'google_id' => 'string',
         ];
     }
 
