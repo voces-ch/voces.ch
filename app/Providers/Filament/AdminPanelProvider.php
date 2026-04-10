@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Tenancy\EditOrganizationProfile;
 use App\Filament\Pages\Tenancy\RegisterOrganization;
+use App\Http\Middleware\SetFilamentLocale;
 use App\Models\Organization;
 use Athphane\FilamentEditorjs\FilamentEditorjsPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -82,6 +83,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                SetFilamentLocale::class
             ])
             ->authMiddleware([
                 Authenticate::class,
