@@ -64,7 +64,7 @@ class SignatureInfolist
 
                                 Tab::make(__('Verification & Timing'))
                                     ->schema([
-                                        IconEntry::make('is_verified')
+                                        IconEntry::make('isVerified')
                                             ->label(__('DOI Status'))
                                             ->boolean(),
 
