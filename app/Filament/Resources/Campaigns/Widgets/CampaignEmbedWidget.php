@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Filament\Resources\CampaignResource\Widgets;
+namespace App\Filament\Resources\Campaigns\Widgets;
 
-use App\Models\Campaign;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
