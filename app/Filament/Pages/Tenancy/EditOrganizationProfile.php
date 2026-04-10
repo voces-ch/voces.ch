@@ -1,6 +1,8 @@
 <?php
 namespace App\Filament\Pages\Tenancy;
 
+use App\Filament\Schemas\Shared\CampaignFieldSchema;
+use Closure;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -16,28 +18,27 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use File;
 use Illuminate\Support\Str;
 
 class EditOrganizationProfile extends EditTenantProfile
 {
     public static function getLabel(): string
     {
-        return 'Organization Settings';
+        return __('Organization Profile');
     }
 
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make('General Information')
-                    ->description('Update your organization\'s basic information. The UUID is used for integration with other organizations and cannot be changed.')
+                Section::make(__('Basic Information'))
+                    ->description(__('Update your organization\'s basic information. The UUID is used for integration with other organizations and cannot be changed.'))
                     ->schema([
                     TextInput::make('uuid')
                         ->disabled()
                         ->copyable()
-                        ->helperText('The UUID is used to identify your organization when other organizations want to add you as a campaign partner. It cannot be changed.')
-                        ->label('UUID'),
+                        ->helperText(__('The UUID is used to identify your organization when other organizations want to add you as a campaign partner. It cannot be changed.'))
+                        ->label(__('UUID')),
                     TextInput::make('name')
                         ->required()
                         ->maxLength(255)
@@ -52,13 +53,13 @@ class EditOrganizationProfile extends EditTenantProfile
 
                     TextInput::make('slug')
                         ->required()
-                        ->label('URL Slug')
-                        ->helperText('The URL slug is used in the URL to access your organization\'s profile. It must be unique across all organizations and can only contain letters, numbers, and hyphens.')
+                        ->label(__('URL Slug'))
+                        ->helperText(__('The URL slug is used in the URL to access your organization\'s profile. It must be unique across all organizations and can only contain letters, numbers, and hyphens.'))
                         ->unique(ignoreRecord: true)
                         ->maxLength(255),
 
                     Select::make('default_locale')
-                        ->label('Default Language')
+                        ->label(__('Default Language'))
                         ->options([
                             'de' => 'Deutsch',
                             'fr' => 'Français',
@@ -68,90 +69,37 @@ class EditOrganizationProfile extends EditTenantProfile
                         ->required(),
                     ])
                     ->columns(2),
-                Section::make('Default Campaign Fields')
-                    ->description('Define the default fields that will be included in every new campaign. These can be overridden at the campaign level.')
+                Section::make(__('Default Campaign Fields'))
+                    ->description(__('Define the default fields that will be included in every new campaign. These can be overridden at the campaign level.'))
                     ->schema([
                     Repeater::make('default_campaign_fields')
-                        ->schema([
-                            TextInput::make('name')
-                                ->label('Internal Key')
-                                ->required()
-                                ->helperText('e.g., first_name (No spaces)'),
-                            Select::make('type')
-                                ->options([
-                                    'text' => 'Short Text (Single Line)',
-                                    'textarea' => 'Long Text (Paragraph)',
-                                    'email' => 'Email Address',
-                                    'tel' => 'Phone Number',
-                                    'number' => 'Number',
-                                    'date' => 'Date',
-                                    'checkbox' => 'Checkbox (e.g., Opt-in / Yes/No)',
-                                ])
-                                ->live()
-                                ->afterStateUpdated(fn (Set $set) => $set('default_value', null))
-                                ->required(),
-                            // Using MarkdownEditor because RichEditor can't be filled programmatically [BUG]
-                            // see https://github.com/filamentphp/filament/issues/17472
-                            MarkdownEditor::make('label')
-                                ->label('Public Label')
-                                ->required()
-                                ->helperText('e.g., First Name')
-                                ->columnSpanFull()
-                                ->translatable(supportedLocales: function() {
-                                    $default_locale = Filament::getTenant()->default_locale ?? 'en';
-                                    $localeNames = [
-                                        'de' => 'Deutsch',
-                                        'fr' => 'Français',
-                                        'it' => 'Italiano',
-                                        'en' => 'English',
-                                    ];
-                                    return [
-                                        $default_locale => $localeNames[$default_locale] ?? $default_locale,
-                                    ];
-                                }),
-                            TextInput::make('default_value_text')
-                                ->label('Default Value')
-                                ->visible(fn (Get $get) => in_array($get('type'), ['text', 'email', 'number', 'tel']))
-                                ->formatStateUsing(fn (Get $get) => $get('default_value'))
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
+                        ->label(__('Default Campaign Fields'))
+                        ->schema(CampaignFieldSchema::getFields())
+                        ->rule(function () {
+                            return function (string $attribute, mixed $value, Closure $fail) {
+                                $uniqueCount = collect($value)->where('is_unique', true)->count();
+                                if ($uniqueCount > 1) {
+                                    $fail(__('Only one field can be marked as the unique identifier.'));
+                                }
+                                if ($uniqueCount === 0) {
+                                    $fail(__('You must select exactly one field to be the unique identifier.'));
+                                }
 
-                            Textarea::make('default_value_textarea')
-                                ->label('Default Value')
-                                ->visible(fn (Get $get) => $get('type') === 'textarea')
-                                ->formatStateUsing(fn (Get $get) => $get('default_value'))
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
+                                $uniqueField = collect($value)->firstWhere('is_unique', true);
+                                if ($uniqueField && !in_array($uniqueField['type'], ['text', 'email'])) {
+                                    $fail(__('The unique identifier field must be of type "text" or "email".'));
+                                }
 
-                            DatePicker::make('default_value_date')
-                                ->label('Default Value')
-                                ->visible(fn (Get $get) => $get('type') === 'date')
-                                ->formatStateUsing(fn (Get $get) => $get('default_value'))
-                                ->live()
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
+                                if ($uniqueField && !$uniqueField['is_required']) {
+                                    $fail(__('The unique identifier field must be marked as required.'));
+                                }
 
-                            Toggle::make('default_value_checkbox')
-                                ->label('Checked by default?')
-                                ->visible(fn (Get $get) => $get('type') === 'checkbox')
-                                ->formatStateUsing(fn (Get $get) => $get('default_value') === 'true' || $get('default_value') === '1')
-                                ->live()
-                                ->afterStateUpdated(fn (Set $set, $state) => $set('default_value', $state ? 'true' : 'false'))
-                                ->columnSpanFull()
-                                ->dehydrated(false),
-                            Toggle::make('is_required')
-                                ->inline(false)
-                                ->default(false),
-                            Toggle::make('is_unique')
-                                ->label('Use as Unique Identifier')
-                                ->helperText('Prevents users from signing twice with the same value.'),
-                            Hidden::make("default_value"),
-                        ])
+                                $fieldNames = collect($value)->pluck('name');
+                                if ($fieldNames->count() !== $fieldNames->unique()->count()) {
+                                    $fail(__('Each field must have a unique internal key.'));
+                                }
+                            };
+                        })
                     ])
                     ->collapsible()
                     ->collapsed(),

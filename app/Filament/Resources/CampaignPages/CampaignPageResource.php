@@ -28,6 +28,27 @@ class CampaignPageResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'slug';
 
+    public static function getModelLabel(): string
+    {
+        return __('Campaign Page');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Campaign Pages');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Campaign Pages');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        // This groups resources together under a single collapsible header in the sidebar
+        return __('Campaigning');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CampaignPageForm::configure($schema);

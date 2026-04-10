@@ -25,13 +25,16 @@ class ListCampaigns extends ListRecords
         $tenantId = Filament::getTenant()?->id;
 
         return [
-            'all' => Tab::make('All Campaigns'),
+            'all' => Tab::make('All Campaigns')
+                ->label(__('All Campaigns')),
 
             'hosted' => Tab::make('Hosted by Us')
+                ->label(__('Hosted by Us'))
                 ->icon('heroicon-o-home')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('organization_id', $tenantId)),
 
             'partner' => Tab::make('Coalition Partner')
+                ->label(__('Coalition Partner'))
                 ->icon('heroicon-o-link')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('organization_id', '!=', $tenantId)),
         ];

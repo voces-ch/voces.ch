@@ -20,23 +20,23 @@ class SignatureExporter extends Exporter
     {
         $columns = [
             ExportColumn::make('campaign.title')
-                ->label('Campaign'),
+                ->label(__('Campaign')),
 
             ExportColumn::make('source.name')
-                ->label('Gathered By (Source)'),
+                ->label(__('Gathered By (Source)')),
             ExportColumn::make('isDuplicate')
-                ->label('Is Duplicate')
+                ->label(__('Is Duplicate'))
                 ->state(fn (Signature $record) => $record->isDuplicate() ? 'Yes' : 'No'),
 
             ExportColumn::make('signed_at')
-                ->label('Date Signed'),
+                ->label(__('Date Signed')),
 
             ExportColumn::make('is_verified')
-                ->label('DOI Verified')
+                ->label(__('DOI Verified'))
                 ->state(fn (Signature $record) => $record->is_verified ? 'Yes' : 'No'),
 
             ExportColumn::make('origin')
-                ->label('Origin'),
+                ->label(__('Origin')),
         ];
 
         $tenantId = Filament::getTenant()?->id;

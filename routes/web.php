@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/demo/widget/view', function () {
@@ -11,4 +12,5 @@ Route::get('/demo/widget/view', function () {
 
 Route::redirect('/login-redirect', '/login')->name('login');
 
-
+Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [SocialiteController::class, 'callback']);

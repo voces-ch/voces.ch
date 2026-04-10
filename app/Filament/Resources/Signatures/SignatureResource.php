@@ -28,6 +28,26 @@ class SignatureResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'uuid';
 
+    public static function getModelLabel(): string
+    {
+        return __('Signature');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Signatures');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Signatures');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Data');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SignatureForm::configure($schema);

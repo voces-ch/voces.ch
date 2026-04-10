@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
-class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail, HasLocalePreference
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -22,8 +22,11 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
     protected $fillable = [
         'name',
         'email',
+        'locale',
         'password',
         'organization_id',
+        'email_verified_at',
+        'google_id',
     ];
 
     protected $hidden = [
@@ -41,6 +44,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'google_id' => 'string',
         ];
     }
 
@@ -63,5 +67,10 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
     public function canAccessTenant(Model $tenant): bool
     {
         return $this->organizations()->whereKey($tenant)->exists();
+    }
+
+    public function preferredLocale()
+    {
+        return $this->locale ?? 'de';
     }
 }
