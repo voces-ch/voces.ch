@@ -13,11 +13,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
 
-class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail, HasLocalePreference
+
+
+class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail, HasLocalePreference, HasAppAuthentication
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, InteractsWithAppAuthentication;
 
     protected $fillable = [
         'name',
@@ -27,6 +31,8 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
         'organization_id',
         'email_verified_at',
         'google_id',
+        'app_authentication_secret',
+        'app_authentication_recovery_codes',
     ];
 
     protected $hidden = [

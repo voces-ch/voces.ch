@@ -8,6 +8,7 @@ use App\Filament\Pages\Tenancy\RegisterOrganization;
 use App\Http\Middleware\SetFilamentLocale;
 use App\Models\Organization;
 use Athphane\FilamentEditorjs\FilamentEditorjsPlugin;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -90,6 +91,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->multiFactorAuthentication([
+                AppAuthentication::make(),
             ])
             ->renderHook(
                 PanelsRenderHook::USER_MENU_BEFORE,
