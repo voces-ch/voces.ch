@@ -161,11 +161,13 @@ const handleSubmit = async () => {
             </div>
 
             <div class="voces-field voces-altcha-wrapper">
-                <altcha-widget
-                    :challengeurl="`${props.apiUrl}/auth/challenge`"
-                    :hidefooter="true"
-                    @statechange="handleAltchaChange"
-                ></altcha-widget>
+                <div class="w-fit rounded-md bg-white p-2 shadow-sm">
+                    <altcha-widget
+                        :challengeurl="`${props.apiUrl}/auth/challenge`"
+                        :hidefooter="true"
+                        @statechange="handleAltchaChange"
+                    ></altcha-widget>
+                </div>
                 <p
                     v-if="validationErrors.altcha"
                     class="voces-validation-error"
