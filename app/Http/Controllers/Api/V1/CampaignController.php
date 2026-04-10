@@ -21,22 +21,13 @@ class CampaignController extends Controller
         $campaignPartner = $campaign->campaignPartners()->where('source_slug', $source)->first();
 
         $isHost = is_null($campaignPartner);
-        $partnerOrgId = $campaignPartner ? $campaignPartner->organization_id : null;
-
+        $partnerOrgId = $campaignPartner ? $campaignPartner->id : null;
         $campaign->load(['campaignFields' => function ($query) use ($partnerOrgId, $isHost) {
             $query->where(function ($q) use ($partnerOrgId, $isHost) {
-
                 $q->whereNull('target_organization_ids')
-                ->orWhere('target_organization_ids', '[]');
-
-                if ($isHost) {
-                    $q->orWhereJsonContains('target_organization_ids', 'host');
-                } else {
-                    $q->orWhereJsonContains('target_organization_ids', (string) $partnerOrgId)
-                    ->orWhereJsonContains('target_organization_ids', $partnerOrgId);
-                }
-
-            })->orderBy('order');
+                    ->orWhereJsonLength('target_organization_ids', 0)
+                    ->orWhereJsonContains('target_organization_ids', $isHost ? "host" : $partnerOrgId);
+            });
         }]);
 
         return new CampaignResource($campaign);
