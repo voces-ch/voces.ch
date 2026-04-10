@@ -32,28 +32,29 @@ class CampaignInfolist
                     ->schema([
                         Tabs::make('Details')
                             ->tabs([
-                                Tab::make('General')
+                                Tab::make(__('General'))
                                     ->schema([
-                                        TextEntry::make('title'),
+                                        TextEntry::make('title')
+                                            ->label(__('Title')),
                                         TextEntry::make('uuid')
                                             ->copyable()
-                                            ->label('UUID'),
+                                            ->label(__('UUID')),
                                         TextEntry::make('signature_goal')
-                                            ->label('Signature Goal')
+                                            ->label(__('Signature Goal'))
                                             ->numeric()
                                             ->placeholder('No goal set'),
                                         IconEntry::make('is_active')
                                             ->boolean()
-                                            ->label('Active'),
+                                            ->label(__('Active')),
                                         IconEntry::make('is_data_pooled')
                                             ->boolean()
-                                            ->label('Data Pooled?'),
+                                            ->label(__('Data Pooled?')),
                                     ])
                                     ->columns(2),
-                                Tab::make('Success Logic')
+                                Tab::make(__('Success Logic'))
                                     ->schema([
                                         TextEntry::make('success_type')
-                                            ->label('Success Type')
+                                            ->label(__('Success Type'))
                                             ->badge()
                                             ->color(fn ($state) => match ($state) {
                                                 'message' => 'success',
@@ -62,7 +63,7 @@ class CampaignInfolist
                                             })
                                             ->formatStateUsing(fn ($state) => ucfirst($state)),
                                         TextEntry::make('success_message')
-                                            ->label('Success Message')
+                                            ->label(__('Success Message'))
                                             ->html()
                                             ->visible(fn (Get $get) => $get('success_type') === 'message'),
                                         TextEntry::make('success_url')
@@ -77,34 +78,34 @@ class CampaignInfolist
                                             })
                                             ->weight(FontWeight::Bold)
                                             ->color('primary')
-                                            ->label('Success URL')
+                                            ->label(__('Success URL'))
                                             ->visible(fn (Get $get) => $get('success_type') === 'redirect'),
                                     ]),
                             ])
                             ->columnSpan(['default' => 2, 'md' => 2]),
                         Tabs::make("Meta")
                             ->tabs([
-                                Tab::make('Campaign Partners')
+                                Tab::make(__('Campaign Partners'))
                                 ->schema([
                                     RepeatableEntry::make('campaignPartners')
-                                        ->label('Active Partners')
+                                        ->label(__('Active Partners'))
                                         ->schema([
                                             TextEntry::make('organization.name')
-                                                ->label('Name')
+                                                ->label(__('Name'))
                                                 ->weight(FontWeight::Bold),
                                             TextEntry::make('source_slug')
-                                                ->label('Slug')
+                                                ->label(__('Slug'))
                                                 ->copyable()
                                                 ->formatStateUsing(fn ($state) => "?source={$state}")
                                                 ->color('info'),
                                             Actions::make([
                                                 Action::make('remove_partner')
-                                                    ->label("Remove Partner")
+                                                    ->label(__('Remove Partner'))
                                                     ->icon('heroicon-o-trash')
                                                     ->color('danger')
                                                     ->requiresConfirmation()
-                                                    ->modalHeading('Remove Coalition Partner')
-                                                    ->modalDescription('Are you sure? Their tracking link will stop working, but they will keep any data they have already exported.')
+                                                    ->modalHeading(__('Remove Coalition Partner'))
+                                                    ->modalDescription(__('Are you sure? Their tracking link will stop working, but they will keep any data they have already exported.'))
                                                     ->visible(function ($record) {
                                                         $tenantId = Filament::getTenant()?->id;
 
@@ -128,7 +129,7 @@ class CampaignInfolist
                                                         $livewire->dispatch('$refresh');
 
                                                         Notification::make()
-                                                            ->title('Partner removed')
+                                                            ->title(__('Partner removed'))
                                                             ->success()
                                                             ->send();
                                                     }),
@@ -138,32 +139,32 @@ class CampaignInfolist
                                             ->fullWidth()
                                         ])
                                         ->columns(1)
-                                        ->placeholder('No coalition partners added yet.'),
+                                        ->placeholder(__('No campaign partners added yet.')),
 
                                     Actions::make([
                                         Action::make('add_partner')
-                                            ->label('Attach Partner via UUID')
+                                            ->label(__('Attach Partner via UUID'))
                                             ->icon('heroicon-o-link')
                                             ->color('primary')
                                             ->form([
                                                 TextInput::make('organization_uuid')
-                                                    ->label('Partner Organization UUID')
+                                                    ->label(__('Partner Organization UUID'))
                                                     ->required()
                                                     ->uuid()
-                                                    ->helperText('Ask the partner organization to provide their unique Workspace UUID.'),
+                                                    ->helperText(__('Ask the partner organization to provide their unique Workspace UUID.')),
 
                                                 TextInput::make('source_slug')
-                                                    ->label('Tracking Slug')
+                                                    ->label(__('Tracking Slug'))
                                                     ->required()
-                                                    ->helperText('e.g., sp-zh or campax. Must be unique for this campaign.')
+                                                    ->helperText(__('e.g., sp-zh or campax. Must be unique for this campaign.'))
                                             ])
                                             ->action(function (array $data, Campaign $record, Action $action, \Livewire\Component $livewire) {
                                                 $partnerOrg = Organization::where('uuid', $data['organization_uuid'])->first();
 
                                                 if (! $partnerOrg) {
                                                     Notification::make()
-                                                        ->title('Organization not found.')
-                                                        ->body('Please check the UUID and try again.')
+                                                        ->title(__('Organization not found.'))
+                                                        ->body(__('Please check the UUID and try again.'))
                                                         ->danger()
                                                         ->send();
 
@@ -172,8 +173,8 @@ class CampaignInfolist
 
                                                 if ($partnerOrg->id === $record->organization_id) {
                                                     Notification::make()
-                                                        ->title('Invalid Partner')
-                                                        ->body('You cannot add the campaign host as a partner.')
+                                                        ->title(__('Invalid Partner'))
+                                                        ->body(__('You cannot add the campaign host as a partner.'))
                                                         ->warning()
                                                         ->send();
 
@@ -182,8 +183,8 @@ class CampaignInfolist
 
                                                 if ($record->campaignPartners()->where('organization_id', $partnerOrg->id)->exists()) {
                                                     Notification::make()
-                                                        ->title('Already Attached')
-                                                        ->body('This organization is already a partner on this campaign.')
+                                                        ->title(__('Already Attached'))
+                                                        ->body(__('This organization is already a partner on this campaign.'))
                                                         ->warning()
                                                         ->send();
 
@@ -192,8 +193,8 @@ class CampaignInfolist
 
                                                 if ($record->campaignPartners()->where('source_slug', $data['source_slug'])->exists()) {
                                                     Notification::make()
-                                                        ->title('Slug already in use')
-                                                        ->body("The tracking slug '{$data['source_slug']}' is already assigned to another partner on this campaign. Please choose a unique one.")
+                                                        ->title(__('Slug already in use'))
+                                                        ->body(__('The tracking slug {:slug} is already assigned to another partner on this campaign. Please choose a unique one.', ['slug' => $data['source_slug']]))
                                                         ->danger()
                                                         ->send();
 
@@ -209,7 +210,7 @@ class CampaignInfolist
                                                 $livewire->dispatch('$refresh');
 
                                                 Notification::make()
-                                                    ->title('Partner successfully attached!')
+                                                    ->title(__('Partner successfully attached!'))
                                                     ->success()
                                                     ->send();
                                             })
@@ -217,41 +218,44 @@ class CampaignInfolist
                                     ])->fullWidth(),
                                 ]),
 
-                                Tab::make('Organization & Timing')
+                                Tab::make(__('Organization & Timing'))
                                     ->schema([
                                         TextEntry::make('organization.name')
                                             ->weight(FontWeight::Bold)
                                             ->color('primary')
                                             ->url(fn ($record) => $record->organization ? route('filament.admin.tenant.profile', ['tenant' => $record->organization]) : null)
-                                            ->label('Organization'),
+                                            ->label(__('Organization')),
                                         TextEntry::make('created_at')
                                             ->dateTime()
+                                            ->label(__('Created At'))
                                             ->placeholder('-'),
                                         TextEntry::make('updated_at')
                                             ->dateTime()
+                                            ->label(__('Updated At'))
                                             ->placeholder('-'),
                                         TextEntry::make('deleted_at')
                                             ->dateTime()
+                                            ->label(__('Deleted At'))
                                             ->visible(fn (Campaign $record): bool => $record->trashed()),
                                     ]),
                             ])
                             ->columnSpan(['default' => 3, 'md' => 1]),
                     ])
                     ->columnSpanFull(),
-                    Section::make("Custom Fields")
+                    Section::make(__("Campaign Fields"))
                         ->schema([
                             RepeatableEntry::make('campaignFields')
-                                ->label('Custom Fields')
+                                ->label(__('Campaign Fields'))
                                 ->schema([
                                     TextEntry::make('label')
                                         ->html()
-                                        ->label('Public Label'),
+                                        ->label(__('Public Label')),
                                     TextEntry::make('name')
-                                        ->label('Internal Name')
+                                        ->label(__('Internal Name'))
                                         ->copyable()
-                                        ->helperText('Used for data exports and integrations. Must be unique.'),
+                                        ->helperText(__('Used for data exports and integrations. Must be unique.')),
                                     TextEntry::make('type')
-                                        ->label('Field Type')
+                                        ->label(__('Field Type'))
                                         ->badge()
                                         ->color(fn ($state) => match ($state) {
                                             'text' => 'primary',
@@ -261,20 +265,20 @@ class CampaignInfolist
                                         })
                                         ->formatStateUsing(fn ($state) => ucfirst($state)),
                                     TextEntry::make('default_value')
-                                        ->label('Default Value')
-                                        ->helperText('Optional default value for this field.'),
+                                        ->label(__('Default Value'))
+                                        ->helperText(__('Optional default value for this field.')),
                                     IconEntry::make('is_unique')
                                         ->boolean()
-                                        ->label('Must be Unique?'),
+                                        ->label(__('Must be Unique?')),
                                     IconEntry::make('is_required')
                                         ->boolean()
-                                        ->label('Required?'),
+                                        ->label(__('Required?')),
                                 ])
                                 ->columns(2)
                                 ->placeholder('-')
                                 ->columnSpanFull(),
                         ])
-                        ->description('Custom fields associated with this campaign. These fields will appear on the signup form and be included in exports.')
+                        ->description(__('Custom fields associated with this campaign. These fields will appear on the signup form and be included in exports.'))
                         ->columnSpanFull()
                         ->collapsed(true)
                         ->collapsible(),

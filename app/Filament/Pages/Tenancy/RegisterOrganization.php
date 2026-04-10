@@ -12,7 +12,7 @@ class RegisterOrganization extends RegisterTenant
 {
     public static function getLabel(): string
     {
-        return 'Register organization';
+        return __('Register Organization');
     }
 
     public function form(Schema $schema): Schema
@@ -37,7 +37,7 @@ class RegisterOrganization extends RegisterTenant
                     ->maxLength(255),
 
                 Forms\Components\Select::make('default_locale')
-                    ->label('Default Language')
+                    ->label(__('Default Language'))
                     ->options([
                         'de' => 'Deutsch',
                         'fr' => 'Français',

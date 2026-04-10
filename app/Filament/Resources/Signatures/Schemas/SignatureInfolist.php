@@ -25,8 +25,8 @@ class SignatureInfolist
                 Grid::make(3)
                     ->schema([
                         Flex::make([
-                                Section::make('Submitted Data')
-                                    ->description('The exact PII and custom fields provided by the signee.')
+                                Section::make(__('Submitted Data'))
+                                    ->description(__('The exact PII and custom fields provided by the signee.'))
                                     ->schema([
                                         KeyValueEntry::make('payload')
                                             ->hiddenLabel()
@@ -38,38 +38,38 @@ class SignatureInfolist
 
                         Tabs::make("Further Info")
                             ->tabs([
-                                Tab::make('Campaign Info')
+                                Tab::make(__('Campaign Info'))
                                     ->schema([
                                         TextEntry::make('campaign.title')
-                                            ->label('Campaign')
+                                            ->label(__('Campaign'))
                                             ->weight(FontWeight::Bold)
                                             ->color('primary')
                                             ->url(fn ($record) => CampaignResource::getUrl('view', ['record' => $record->campaign_id])),
 
                                         TextEntry::make('source.name')
-                                            ->label('Gathered By (Source)')
+                                            ->label(__('Gathered By (Source)'))
                                             ->default('Organic (Main Page)')
                                             ->badge(),
                                         IconEntry::make('is_duplicate_of')
-                                            ->label('Duplicate')
+                                            ->label(__('Duplicate'))
                                             ->icon('heroicon-o-document-duplicate')
                                             ->color('danger')
                                             ->visible(fn ($record) => $record->is_duplicate_of)
                                             ->tooltip('This signature was originally gathered by a different source, but because data pooling is enabled on the campaign, it has been imported into the current source as well.'),
 
                                         TextEntry::make('origin')
-                                            ->label('Origin')
+                                            ->label(__('Origin'))
                                             ->badge(),
                                     ]),
 
-                                Tab::make('Verification & Timing')
+                                Tab::make(__('Verification & Timing'))
                                     ->schema([
                                         IconEntry::make('is_verified')
-                                            ->label('DOI Status')
+                                            ->label(__('DOI Status'))
                                             ->boolean(),
 
                                         TextEntry::make('signed_at')
-                                            ->label('Timestamp')
+                                            ->label(__('Signature Timestamp'))
                                             ->dateTime('d.m.Y H:i:s'),
                                     ]),
                             ])

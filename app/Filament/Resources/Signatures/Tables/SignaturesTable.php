@@ -22,26 +22,33 @@ class SignaturesTable
         return $table
             ->columns([
                 TextColumn::make('uuid')
-                    ->label('UUID')
+                    ->label(__('UUID'))
                     ->searchable(),
                 IconColumn::make('is_verified')
+                    ->label(__('Verified'))
                     ->boolean(),
                 TextColumn::make('signed_at')
+                    ->label(__('Signed At'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('campaign.title')
+                    ->label(__('Campaign'))
                     ->searchable(),
-                TextColumn::make('organization.name')
+                TextColumn::make('source.name')
+                    ->label(__('Organization'))
                     ->searchable(),
                 TextColumn::make('created_at')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label(__('Updated At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('deleted_at')
+                    ->label(__('Deleted At'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -65,6 +72,8 @@ class SignaturesTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('No signatures found'))
+            ->emptyStateDescription(__('Start a campaign and collect signatures using the signature collection form.'));
     }
 }

@@ -72,9 +72,9 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
             ->databaseNotifications()
             ->navigationGroups([
-                'Campaigning',
-                "Data",
-                'Settings',
+                __('Campaigning'),
+                __('Data'),
+                __('Settings'),
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -19,9 +19,9 @@ class CampaignFieldSchema
     {
         return [
             TextInput::make('name')
-                                ->label('Internal Key')
+                                ->label(__('Internal Key'))
                                 ->required()
-                                ->helperText('e.g., first_name (No spaces)'),
+                                ->helperText(__('e.g., first_name (No spaces)')),
             Select::make('type')
                 ->options([
                     'text' => 'Short Text (Single Line)',
@@ -38,13 +38,13 @@ class CampaignFieldSchema
             // Using MarkdownEditor because RichEditor can't be filled programmatically [BUG]
             // see https://github.com/filamentphp/filament/issues/17472
             MarkdownEditor::make('label')
-                ->label('Public Label')
+                ->label(__('Public Label'))
                 ->required()
-                ->helperText('e.g., First Name')
+                ->helperText(__('e.g., First Name'))
                 ->columnSpanFull()
                 ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
             TextInput::make('default_value_text')
-                ->label('Default Value')
+                ->label(__('Default Value'))
                 ->visible(fn (Get $get) => in_array($get('type'), ['text', 'email', 'number', 'tel']))
                 ->formatStateUsing(fn (Get $get) => $get('default_value'))
                 ->live(onBlur: true)
@@ -53,7 +53,7 @@ class CampaignFieldSchema
                 ->dehydrated(false),
 
             Textarea::make('default_value_textarea')
-                ->label('Default Value')
+                ->label(__('Default Value'))
                 ->visible(fn (Get $get) => $get('type') === 'textarea')
                 ->formatStateUsing(fn (Get $get) => $get('default_value'))
                 ->live(onBlur: true)
@@ -62,7 +62,7 @@ class CampaignFieldSchema
                 ->dehydrated(false),
 
             DatePicker::make('default_value_date')
-                ->label('Default Value')
+                ->label(__('Default Value'))
                 ->visible(fn (Get $get) => $get('type') === 'date')
                 ->formatStateUsing(fn (Get $get) => $get('default_value'))
                 ->live()
@@ -71,7 +71,7 @@ class CampaignFieldSchema
                 ->dehydrated(false),
 
             Toggle::make('default_value_checkbox')
-                ->label('Checked by default?')
+                ->label(__('Checked by default?'))
                 ->visible(fn (Get $get) => $get('type') === 'checkbox')
                 ->formatStateUsing(fn (Get $get) => $get('default_value') === 'true' || $get('default_value') === '1')
                 ->live()
@@ -80,13 +80,14 @@ class CampaignFieldSchema
                 ->dehydrated(false),
             Hidden::make("default_value"),
             Toggle::make('is_required')
-                ->inline(false)
+                ->label(__('Required?'))
+                ->helperText(__('Supporters must fill out this field to submit the form.'))
                 ->default(false),
             Toggle::make('is_unique')
-                ->label('Use as Unique Identifier')
-                ->helperText('Prevents users from signing twice with the same value.'),
+                ->label(__('Use as Unique Identifier'))
+                ->helperText(__('Prevents users from signing twice with the same value.')),
             Select::make('target_organization_ids')
-                ->label('Display on which forms?')
+                ->label(__('Display on which forms?'))
                 ->visible(fn (Get $get) => ! $get('is_required') && ! $get('is_unique'))
                 ->multiple()
                 ->options(function () use ($campaign) {
@@ -97,7 +98,7 @@ class CampaignFieldSchema
                     return ['host' => 'Campaign host'] + $partners->toArray();
                 })
                 ->placeholder('All Partners (Leave blank for global fields)')
-                ->helperText('If left blank, this field appears on the main form and EVERY partner form.')
+                ->helperText(__('If left blank, this field appears on the main form and EVERY partner form.'))
                 ->columnSpanFull(),
         ];
     }

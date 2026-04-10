@@ -26,10 +26,10 @@ class EditCampaign extends EditRecord
             ForceDeleteAction::make(),
             RestoreAction::make(),
             Action::make('manage_languages')
-                ->label('Manage Languages')
+                ->label(__('Manage Languages'))
                 ->icon('heroicon-o-language')
-                ->modalHeading('Manage Campaign Languages')
-                ->modalDescription('Select all the languages this campaign should support.')
+                ->modalHeading(__('Manage Campaign Languages'))
+                ->modalDescription(__('Select all the languages this campaign should support.'))
                 ->form(function (Campaign $record) {
                     $allLocales = [
                         'de' => 'Deutsch',
@@ -40,7 +40,7 @@ class EditCampaign extends EditRecord
 
                     return [
                         Select::make('languages')
-                            ->label('Supported Languages')
+                            ->label(__('Supported Languages'))
                             ->multiple()
                             ->options($allLocales)
                             ->default($record->languages ?? [])

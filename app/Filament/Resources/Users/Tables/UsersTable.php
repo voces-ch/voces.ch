@@ -29,19 +29,21 @@ class UsersTable
             ->filters([
                 //
             ])
+            ->emptyStateHeading(__('No users found'))
+            ->emptyStateDescription(__('Use the "Invite Team Member" button to add users to this organization.'))
             ->headerActions([
                 Action::make('invite_member')
-                    ->label('Invite Team Member')
+                    ->label(__('Invite Team Member'))
                     ->icon('heroicon-o-user-plus')
                     ->form([
                         TextInput::make('email')
                             ->email()
                             ->required()
-                            ->helperText('If they already have a Voces account, they will be added instantly.'),
+                            ->helperText(__('If they already have a Voces account, they will be added instantly.')),
 
                         TextInput::make('name')
                             ->required()
-                            ->helperText('Only used if we need to create a new account for them.'),
+                            ->helperText(__('Only used if we need to create a new account for them.')),
                     ])
                     ->action(function (array $data, \Livewire\Component $livewire) {
                         $tenant = Filament::getTenant();
@@ -73,12 +75,12 @@ class UsersTable
             ])
             ->recordActions([
                 Action::make('remove')
-                    ->label('Remove from Team')
+                    ->label(__('Remove from Team'))
                     ->icon('heroicon-o-user-minus')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->modalHeading('Remove Team Member')
-                    ->modalDescription('This will revoke their access to this organization. It will not delete their global Voces account.')
+                    ->modalHeading(__('Remove Team Member'))
+                    ->modalDescription(__('This will revoke their access to this organization. It will not delete their global Voces account.'))
                     // Prevent users from removing themselves to avoid locking out the organization
                     ->hidden(fn (User $record) => $record->id === auth()->id())
                     ->action(function (User $record) {

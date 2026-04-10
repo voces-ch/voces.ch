@@ -19,15 +19,15 @@ class CampaignPagesTable
         return $table
             ->columns([
                 IconColumn::make('is_published')
-                    ->label('Published')
+                    ->label(__('Published'))
                     ->boolean()
                     ->sortable(),
                 TextColumn::make('campaign.title')
-                    ->label('Campaign')
+                    ->label(__('Campaign'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->label('Slug')
+                    ->label(__('Slug'))
                     ->sortable()
                     ->copyable()
                     ->searchable(),
@@ -44,6 +44,8 @@ class CampaignPagesTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('No campaign pages found'))
+            ->emptyStateDescription(__('Get started by creating a new campaign page.'));
     }
 }
