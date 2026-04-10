@@ -3,7 +3,7 @@ import { ref, computed, watch } from "vue";
 
 const props = defineProps({
     goal: { type: Number, required: true },
-    count: { type: Number, required: true },
+    statistic: { type: Number, required: true },
     t: { type: Object, required: true },
 });
 
@@ -13,8 +13,8 @@ const displayedCount = ref(0);
 const displayedPercentage = ref(0);
 
 const targetPercentage = computed(() => {
-    if (!props.goal || !props.count) return 0;
-    return Math.min(Math.round((props.count / props.goal) * 100), 100);
+    if (!props.goal || !props.statistic) return 0;
+    return Math.min(Math.round((props.statistic / props.goal) * 100), 100);
 });
 
 const animateNumbers = (start, end) => {
@@ -46,7 +46,7 @@ watch(progressSection, (el) => {
             if (entries[0].isIntersecting && !hasAnimated.value) {
                 hasAnimated.value = true;
                 displayedPercentage.value = targetPercentage.value;
-                animateNumbers(0, props.count);
+                animateNumbers(0, props.statistic);
                 observer.disconnect();
             }
         },
@@ -60,7 +60,7 @@ watch(progressSection, (el) => {
     <div ref="progressSection" class="voces-progress-wrapper">
         <div class="voces-progress-stats">
             <span
-                ><strong>{{ displayedCount }}</strong> {{ t.signatures }}</span
+                ><strong>{{ displayedCount }}</strong></span
             >
             <span>{{ t.goal }}: {{ goal }}</span>
         </div>

@@ -49,13 +49,29 @@ const handleAltchaChange = (event) => {
 };
 
 const handleSubmit = async () => {
-    const oldCount = campaignData.value.signature_count;
+    const oldCount = campaignData.value.goal_statistic;
     await submitForm(() => {
-        campaignData.value.signature_count++;
+        if (campaignData.value.goal_type === "count") {
+            campaignData.value.goal_statistic++;
+        } else if (campaignData.value.goal_type === "sum") {
+            const goalField = campaignData.value.fields.find(
+                (f) => f.name === campaignData.value.goal_field,
+            );
+            if (goalField) {
+                const value = parseInt(formData.value[goalField.name]) || 0;
+                console.log(
+                    "Adding value to goal statistic:",
+                    value,
+                    "to current statistic:",
+                    campaignData.value.goal_statistic,
+                );
+                campaignData.value.goal_statistic += value;
+            }
+        }
         if (progressBarRef.value) {
             progressBarRef.value.updateProgress(
                 oldCount,
-                campaignData.value.signature_count,
+                campaignData.value.goal_statistic,
             );
         }
     });
@@ -65,10 +81,10 @@ const handleSubmit = async () => {
 <template>
     <div class="voces-widget" :class="`voces-theme-${props.theme}`">
         <ProgressBar
-            v-if="props.showProgress && campaignData?.signature_goal"
+            v-if="props.showProgress && campaignData?.goal"
             ref="progressBarRef"
-            :goal="campaignData.signature_goal"
-            :count="campaignData.signature_count"
+            :goal="campaignData.goal"
+            :statistic="campaignData.goal_statistic"
             :t="t"
         />
 

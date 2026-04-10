@@ -46,10 +46,6 @@ class CampaignForm
                                     ->label(__('Submit Button Text'))
                                     ->default(fn () => LocaleHelper::getDefaultSubmitButtonText($campaign))
                                     ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
-                                TextInput::make('signature_goal')
-                                    ->label(__('Signature Goal'))
-                                    ->numeric()
-                                    ->minValue(1),
                                 Toggle::make('is_data_pooled')
                                     ->label(__('Pool Campaign Data'))
                                     ->helperText(__('If enabled, you (the Host) will have access to all signee data collected by your Partners.'))
@@ -107,6 +103,39 @@ class CampaignForm
                                         ->translatable(supportedLocales: LocaleHelper::getLocales($campaign))
                                         ->columnSpanFull()
                                         ->visible(fn (Get $get) => $get('success_type') === 'redirect')
+                                ]),
+                            Tab::make(__('Campaign Goal'))
+                                ->schema([
+                                    Toggle::make('has_goal')
+                                        ->label(__('Enable Campaign Goal'))
+                                        ->helperText(__('If enabled, you can set a goal for this campaign.'))
+                                        ->default(false)
+                                        ->dehydrated()
+                                        ->live(),
+                                    Select::make('goal_type')
+                                        ->label(__('Goal Type'))
+                                        ->options([
+                                            'count' => __('Count Submissions'),
+                                            'sum' => __('Sum a Field Value')
+                                        ])
+                                        ->default('count')
+                                        ->visible(fn (Get $get) => $get('has_goal') === true)
+                                        ->required(fn (Get $get) => $get('has_goal') === true)
+                                        ->live(),
+                                    TextInput::make('goal')
+                                        ->label(__('Goal Target'))
+                                        ->visible(fn (Get $get) => $get('has_goal') === true)
+                                        ->required(fn (Get $get) => $get('has_goal') === true)
+                                        ->helperText(__('Enter the target number for this goal. For example, if you want to collect 10,000 signatures, enter "10000" here.')),
+                                    Select::make('goal_field')
+                                        ->label(__('Goal Field'))
+                                        ->options(function (Get $get) {
+                                            $fields = $get('campaignFields') ?? [];
+                                            return collect($fields)->filter(fn ($field) => in_array($field['type'], ['number']))->pluck('name', 'name');
+                                        })
+                                        ->visible(fn (Get $get) => $get('has_goal') === true && $get('goal_type') === 'sum')
+                                        ->required(fn (Get $get) => $get('has_goal') === true && $get('goal_type') === 'sum')
+                                        ->helperText(__('Select the numeric field that will be summed to track progress towards the goal. Only campaign fields defined below of type "number" will be shown here.')),
                                 ]),
                             Tab::make(__('Email Verification'))
                                 ->schema([

@@ -40,6 +40,10 @@ class Campaign extends Model
         'verification_success_action',
         'verification_success_message',
         'verification_success_url',
+        'has_goal',
+        'goal',
+        'goal_type',
+        'goal_field',
     ];
 
     public array $translatable = [
@@ -94,12 +98,20 @@ class Campaign extends Model
         return $this->hasMany(Signature::class);
     }
 
-    public function totalSignatures(): int
+    public function goalStatistic(): int
     {
-        return $this->signatures()
-            ->whereNotNull('verified_at')
-            ->distinct('unique_identifier')
-            ->count('unique_identifier');
+        $relevantSignatures = $this->signatures()
+            ->distinct('unique_identifier');
+        if ($this->is_email_verification_enabled) {
+            $relevantSignatures->whereNotNull('verified_at');
+        }
+        if ($this->goal_type === 'count') {
+            return $relevantSignatures->count('unique_identifier');
+        } elseif ($this->goal_type === 'sum' && $this->goal_field) {
+            return $relevantSignatures->get()->sum("payload.{$this->goal_field}");
+        } else {
+            return 0;
+        }
     }
 
     public function integrations(): HasMany
