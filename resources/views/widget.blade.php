@@ -121,7 +121,7 @@
             </p>
         </footer>
 
-        <script type="module" src="/widget/latest/voces-widget.js"></script>
+        <script type="module" src="{{ config('app.widget_url') }}/latest/voces-widget.js"></script>
         <script type="module">
             window.voces.widget({
                 campaignUuid: "c7439b13-cabe-4daf-8f21-1f1b2980edd6",
