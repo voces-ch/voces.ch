@@ -43,3 +43,21 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  deploy:
+    name: Deploy to Server
+    needs: build-and-push-image
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy Production
+        run: |
+          cd /data/projects/voces.ch/app/prod
+          docker compose pull
+          docker compose up -d
+
+      - name: Deploy Demo
+        run: |
+          cd /data/projects/voces.ch/app/demo
+          docker compose pull
+          docker compose up -d
+          docker compose exec -T app php artisan migrate:fresh --seed
