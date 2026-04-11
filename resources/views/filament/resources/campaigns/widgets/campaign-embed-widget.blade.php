@@ -13,12 +13,12 @@
             $version = $data['version'] ?? 'latest';
             $showProgress = $data['showProgress'] ? "\n        showProgress: true," : '';
 
-            $appUrl = config('app.url');
+            $appUrl = config('app.widget_url');
 
             $code = <<<HTML
 <div id="voces-campaign-widget"></div>
 
-<script src="{$appUrl}/widget/{$version}/voces-widget.js"></script>
+<script src="{$appUrl}/{$version}/voces-widget.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     window.voces.widget({

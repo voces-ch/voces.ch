@@ -53,6 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'widget_url' => env('WIDGET_URL', 'https://widget.voces.lndo.site'),
 
     /*
     |--------------------------------------------------------------------------

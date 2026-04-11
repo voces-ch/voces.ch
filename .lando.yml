@@ -3,14 +3,10 @@ name: voces
 recipe: laravel
 config:
   webroot: public
-  php: '8.5'
+  php: "8.5"
   database: mysql
 
 services:
-  appserver:
-    build_as_root:
-      - curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
-      - apt-get install -y nodejs
   mailhog:
     type: mailhog
     portforward: false
@@ -18,6 +14,5 @@ services:
 proxy:
   appserver:
     - voces.lndo.site
-    - widget.voces.lndo.site:5173
   mailhog:
     - mailhog.voces.lndo.site

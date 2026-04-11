@@ -25,21 +25,11 @@ class CampaignEmbedWidget extends Widget implements HasForms
 
     protected static function getAllVersions(): array
     {
-        // Get all directories in public/widget/* ordered by modified time that are not «latest»
-        $directories = glob(public_path('widget/*'), GLOB_ONLYDIR);
-        $directories = array_filter($directories, function ($dir) {
-            return basename($dir) !== 'latest';
-        });
-        usort($directories, function ($a, $b) {
-            return filemtime($b) - filemtime($a);
-        });
-        foreach ($directories as $dir) {
-            $dirName = basename($dir);
-            $options[$dirName] = ucfirst($dirName);
-        }
-        // Add a "latest" option at the end of the list
-        $options = array_merge($options, ["latest" => "Latest"] ?? []);
-        return $options;
+        // In a real application, you might fetch this from a database or configuration file
+        return [
+            '0.0.11' => __('Version 0.0.11'),
+            'latest' => __('Latest Stable'),
+        ];
     }
 
     protected static function getNewestVersionedWidget(): ?string
