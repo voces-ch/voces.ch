@@ -7,6 +7,14 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 RUN a2enmod rewrite
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git curl \
+    libpng-dev libonig-dev libxml2-dev \
+    zip unzip \
+    libzip-dev \
+    libicu-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -19,7 +27,12 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install -j"$(nproc)" \
+    pdo_mysql mbstring exif pcntl bcmath gd intl zip
+
+RUN php -m | grep -E '^intl$' \
+    && php -m | grep -E '^zip$'
 
 RUN pecl install redis && docker-php-ext-enable redis
 
