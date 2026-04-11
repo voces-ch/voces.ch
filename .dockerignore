@@ -1,0 +1,17 @@
+.git
+.gitignore
+.gitattributes
+.github
+.vscode
+.lando.yml
+node_modules
+vendor
+npm-debug.log
+.env
+.env.*
+phpunit.xml
+tests/
+deploy.sh.template
+.blueprint
+draft.yaml
+.editorconfig
