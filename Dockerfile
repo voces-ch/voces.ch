@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip unzip \
     libzip-dev \
     libicu-dev \
+    && curl -fsSL https://deb.nodesource.com/setup_25.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure intl \
@@ -33,3 +35,10 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-d
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["apache2-foreground"]

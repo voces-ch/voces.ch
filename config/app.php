@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => 'voces.ch',
 
     /*
     |--------------------------------------------------------------------------
@@ -53,7 +53,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-    'widget_url' => env('WIDGET_URL', 'https://widget.voces.lndo.site'),
+    'widget_url' => env('WIDGET_URL', 'https://widget.voces.ch'),
 
     /*
     |--------------------------------------------------------------------------
@@ -79,9 +79,9 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'de'),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'de'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
