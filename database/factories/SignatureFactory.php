@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Faker\Generator as Faker;
 use App\Models\Campaign;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;

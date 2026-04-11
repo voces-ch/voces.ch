@@ -15,3 +15,5 @@ deploy.sh.template
 .blueprint
 draft.yaml
 .editorconfig
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
