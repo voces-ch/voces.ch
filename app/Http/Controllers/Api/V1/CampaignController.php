@@ -8,8 +8,11 @@ use App\Http\Resources\SignatureResource;
 use App\Jobs\ProcessSignatureIntegrations;
 use App\Mail\VerifySignature;
 use App\Models\Campaign;
+use App\Notifications\CampaignHighLoadFromIp;
 use GrantHolle\Altcha\Rules\ValidAltcha;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\Rule;
 use Mail;
 
@@ -38,6 +41,14 @@ class CampaignController extends Controller
 
     public function sign(Request $request, Campaign $campaign)
     {
+        $rateLimiterKey = 'sign-petition:'.$campaign->id.':'.md5($request->ip());
+        if (RateLimiter::tooManyAttempts($rateLimiterKey, 200)) {
+            Notification::route('telegram', config('services.telegram.chat_id'))
+                ->notify(new CampaignHighLoadFromIp($request->ip(), $campaign));
+            abort(429, __('We\'re detecting a high volume of signatures from your IP address. This can happen, when you\'re on a shared network. Please try again later. If you think this is an error, please contact us.'));
+        }
+        RateLimiter::increment($rateLimiterKey, 30);
+
         $request->validate([
             'payload.altcha' => ['required', new ValidAltcha],
         ], [

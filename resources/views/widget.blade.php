@@ -128,7 +128,7 @@
                 target: "#voces-dev-container",
                 lang: '{{ request()->input("lang") ?? "de" }}',
                 theme: '{{ request()->input("theme") ?? "minimal" }}',
-                apiUrl: "{{ config('app.url') }}/api/v1",
+                apiBaseUrl: "{{ config('app.url') }}/api/v1",
             });
         </script>
     </body>

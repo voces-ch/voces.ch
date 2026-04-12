@@ -5,6 +5,7 @@ config:
   webroot: public
   php: "8.5"
   database: mysql
+  cache: redis
 
 services:
   mailhog:

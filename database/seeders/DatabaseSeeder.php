@@ -113,7 +113,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'first_name',
                 'label' => [
                     "de" => 'Vorname',
-                    "fr" => 'Prénom'
+                    "fr" => 'Prénom',
+                    "it" => 'Nome',
+                    "en" => 'First Name'
                 ],
                 'type' => 'text',
                 'is_required' => true,
@@ -125,7 +127,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'last_name',
                 'label' => [
                     "de" => 'Nachname',
-                    "fr" => 'Nom de famille'
+                    "fr" => 'Nom de famille',
+                    "it" => 'Cognome',
+                    "en" => 'Last Name'
                 ],
                 'type' => 'text',
                 'is_required' => true,
@@ -137,7 +141,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'email',
                 'label' => [
                     "de" => 'E-Mail Adresse',
-                    "fr" => 'Adresse e-mail'
+                    "fr" => 'Adresse e-mail',
+                    "it" => 'Indirizzo e-mail',
+                    "en" => 'Email Address'
                 ],
                 'type' => 'email',
                 'is_required' => true,
@@ -149,7 +155,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'zip_code',
                 'label' => [
                     "de" => 'Postleitzahl',
-                    "fr" => 'Code postal'
+                    "fr" => 'Code postal',
+                    "it" => 'CAP',
+                    "en" => 'Zip Code'
                 ],
                 'type' => 'text',
                 'is_required' => true,
@@ -161,7 +169,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'pledged_amount',
                 'label' => [
                     "de" => 'Versprochenes Geld',
-                    "fr" => 'Montant promis'
+                    "fr" => 'Montant promis',
+                    "it" => 'Importo promesso',
+                    "en" => 'Pledged Amount'
                 ],
                 'type' => 'number',
                 'is_required' => false,
@@ -173,7 +183,9 @@ class DatabaseSeeder extends Seeder
                 'name' => 'newsletter_opt_in',
                 'label' => [
                     "de" => 'Ja, haltet mich auf dem Laufenden!',
-                    "fr" => 'Oui, tenez-moi informé !'
+                    "fr" => 'Oui, tenez-moi informé !',
+                    "it" => 'Sì, tienimi aggiornato!',
+                    "en" => 'Yes, keep me updated!'
                 ],
                 'type' => 'checkbox',
                 'is_required' => false,
