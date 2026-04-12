@@ -14,7 +14,6 @@ class CampaignHighLoadFromIp extends Notification implements ShouldQueue
 
     public $ipAddress;
     public Campaign $campaign;
-    public $chat_id;
     /**
      * Create a new notification instance.
      */
@@ -22,7 +21,6 @@ class CampaignHighLoadFromIp extends Notification implements ShouldQueue
     {
         $this->ipAddress = $ipAddress;
         $this->campaign = $campaign;
-        $this->chat_id = config('services.telegram.chat_id');
     }
 
     /**
