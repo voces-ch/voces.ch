@@ -128,7 +128,7 @@
                 target: "#voces-dev-container",
                 lang: '{{ request()->input("lang") ?? "de" }}',
                 theme: '{{ request()->input("theme") ?? "minimal" }}',
-                showProgress: {{ request()->input("showProgress", "true") === "true" ? "true" : "false" }},
+                apiUrl: "{{ config('app.url') }}/api/v1",
             });
         </script>
     </body>

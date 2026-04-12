@@ -11,6 +11,8 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class CampaignEmbedWidget extends Widget implements HasForms
 {
@@ -25,12 +27,27 @@ class CampaignEmbedWidget extends Widget implements HasForms
 
     protected static function getAllVersions(): array
     {
-        // In a real application, you might fetch this from a database or configuration file
-        return [
-            '0.0.11' => __('Version 0.0.11'),
-            'latest' => __('Latest Stable'),
-        ];
+        $cachedVersions = Cache::get('voces_widget_versions', ['latest' => __('Latest Stable Version')]);
+
+        try {
+            $response = Http::timeout(5)->get('https://api.github.com/repos/voces-ch/voces-widget/contents?ref=cdn');
+
+            if (! $response->successful()) {
+                return $cachedVersions;
+            }
+
+            $contents = collect($response->json())->filter(fn ($item) => $item['type'] === 'dir');
+            $versions = $contents->mapWithKeys(fn ($content) => [$content['name'] => __("Version :version", ['version' => $content['name']])])->toArray();
+            $versions['latest'] = __('Latest Stable Version');
+
+            Cache::put('voces_widget_versions', $versions, now()->addHours(1));
+
+            return $versions;
+        } catch (\Throwable) {
+            return $cachedVersions;
+        }
     }
+
 
     protected static function getNewestVersionedWidget(): ?string
     {
@@ -75,12 +92,6 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ])
                     ->default('minimal')
                     ->live(),
-                Toggle::make("showProgress")
-                    ->label(__('Show Progress Bar'))
-                    ->live(),
-                Select::make("version")
-                    ->options(self::getAllVersions())
-                    ->live(),
                 Select::make('source')
                     ->options($sources)
                     // Only visible to host organization, hide for partners
@@ -91,6 +102,12 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ->helperText(__('e.g., homepage, facebook_ad, newsletter'))
                     ->live()
                     ->maxLength(255),
+                Select::make("version")
+                    ->options(self::getAllVersions())
+                    ->label(__('Widget Version'))
+                    ->helperText(__('Select the version of the widget to use. Using "Latest Stable Version" will automatically use the newest stable version available but may cause unexpected issues if a new version is released. Newly released version usually appear in the list within an hour.'))
+                    ->columnSpanFull()
+                    ->live(),
             ])
             ->columns(2)
             ->statePath('data');
