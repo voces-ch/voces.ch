@@ -13,19 +13,21 @@
             $version = $data['version'] ?? 'latest';
             $showProgress = $data['showProgress'] ? "\n        showProgress: true," : '';
 
-            $appUrl = config('app.widget_url');
+            $widgetUrl = config('app.widget_url');
+            $apiUrl = config('app.url') . '/api/v1';
 
             $code = <<<HTML
 <div id="voces-campaign-widget"></div>
 
-<script src="{$appUrl}/{$version}/voces-widget.js"></script>
+<script src="{$widgetUrl}/{$version}/voces-widget.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     window.voces.widget({
         campaignUuid: '{$uuid}',
         target: '#voces-campaign-widget',
         theme: '{$theme}',
-        lang: '{$lang}',{$source}{$origin}{$showProgress}
+        lang: '{$lang}',{$source}{$origin}
+        apiUrl: "{$apiUrl}",
     });
   });
 </script>

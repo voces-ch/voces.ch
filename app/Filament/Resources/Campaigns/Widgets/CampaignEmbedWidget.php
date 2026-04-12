@@ -75,9 +75,6 @@ class CampaignEmbedWidget extends Widget implements HasForms
                     ])
                     ->default('minimal')
                     ->live(),
-                Toggle::make("showProgress")
-                    ->label(__('Show Progress Bar'))
-                    ->live(),
                 Select::make("version")
                     ->options(self::getAllVersions())
                     ->live(),

@@ -9,7 +9,8 @@
                 campaignUuid: '{{ $uuid }}',
                 target: '#voces-campaign-widget',
                 theme: '{{ $theme }}',
-                lang: '{{ $lang }}',{{ $source }}{{ $origin }}{{ $showProgress }}
+                lang: '{{ $lang }}',{{ $source }}{{ $origin }},
+                apiUrl: "{{ config('app.url') }}/api/v1",
             });
         });
         </script>
