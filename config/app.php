@@ -54,6 +54,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
     'widget_url' => env('WIDGET_URL', 'https://widget.voces.ch'),
+    'act_url' => env('ACT_URL', 'https://act.voces.ch'),
 
     /*
     |--------------------------------------------------------------------------
