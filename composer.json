@@ -14,6 +14,7 @@
         "fakerphp/faker": "^1.23",
         "filament/filament": "^5.0",
         "grantholle/laravel-altcha": "^2.2",
+        "laravel-notification-channels/telegram": "^7.0",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.26",
