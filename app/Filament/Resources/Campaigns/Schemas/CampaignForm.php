@@ -141,8 +141,13 @@ class CampaignForm
                                 ->schema([
                                     Toggle::make('is_email_verification_enabled')
                                         ->label(__('Require Email Verification'))
-                                        ->helperText(__('If enabled, signers will be required to verify their email address before their signature is counted towards the campaign goal.'))
+                                        ->helperText(
+                                            config('app.env') === "demo"
+                                                ? __('Email verification is disabled in the demo environment.')
+                                                : __('If enabled, signers will be required to verify their email address before their signature is counted towards the campaign goal.')
+                                        )
                                         ->default(false)
+                                        ->disabled(fn () => config('app.env') === "demo")
                                         ->live(),
                                     Select::make('email_verification_field')
                                         ->label(__('Email Field for Verification'))
