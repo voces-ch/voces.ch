@@ -41,6 +41,9 @@ class CampaignController extends Controller
 
     public function sign(Request $request, Campaign $campaign)
     {
+        $locale = $request->query('locale', 'de');
+        app()->setLocale($locale);
+
         $rateLimiterKey = 'sign-petition:'.$campaign->id.':'.md5($request->ip());
         if (RateLimiter::tooManyAttempts($rateLimiterKey, 200)) {
             Notification::route('telegram', config('services.telegram.chat_id'))
@@ -55,8 +58,6 @@ class CampaignController extends Controller
             'payload.altcha.required' => __("Please complete the anti-spam verification."),
             'payload.altcha.' . ValidAltcha::class => __('The anti-spam verification failed or expired. Please reload the page.'),
         ]);
-        $locale = $request->query('locale', 'de');
-        app()->setLocale($locale);
         if (!$campaign->is_active) {
             return response()->json([
                 'status' => 'error',

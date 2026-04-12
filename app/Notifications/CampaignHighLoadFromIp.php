@@ -14,15 +14,30 @@ class CampaignHighLoadFromIp extends Notification implements ShouldQueue
 
     public $ipAddress;
     public Campaign $campaign;
-    public $chat_id;
     /**
      * Create a new notification instance.
      */
     public function __construct($ipAddress, Campaign $campaign)
     {
+        // Remove last octet of IP address for privacy reasons, check if it's a valid IPv4 address first
+        if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $ipAddressParts = explode('.', $ipAddress);
+            if (count($ipAddressParts) === 4) {
+                $ipAddressParts[3] = '0';
+                $ipAddress = implode('.', $ipAddressParts);
+            }
+        } elseif (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            // For IPv6, we can remove the last 80 bits (10 segments) for privacy reasons
+            $ipAddressParts = explode(':', $ipAddress);
+            if (count($ipAddressParts) > 2) {
+                $ipAddress = implode(':', array_slice($ipAddressParts, 0, 2)) . '::';
+            }
+        } else {
+            $ipAddress = 'Unknown';
+        }
+
         $this->ipAddress = $ipAddress;
         $this->campaign = $campaign;
-        $this->chat_id = config('services.telegram.chat_id');
     }
 
     /**

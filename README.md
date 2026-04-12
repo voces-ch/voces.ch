@@ -17,6 +17,18 @@ On large commercial platforms, you often pay indirectly with your supporters' da
 - No selling of email addresses.
 - Full control over how, when, and where your campaign data is stored and exported.
 
+## Declaration of Purpose
+
+Technology is not neutral; it is an amplifier. **voces.ch** was built to amplify the voices of those fighting for a more equitable, just, and inclusive world.
+
+We believe in the fundamental equality of all people and the urgent need to dismantle systems of oppression, discrimination, and hate. This software is a tool for grassroots mobilization, meant to empower marginalized communities, protect human rights, and foster radical solidarity.
+
+By design, this project is explicitly anti-fascist, anti-racist, and anti-discriminatory. If your campaign seeks to divide, exclude, or punch down—if it promotes xenophobia, transphobia, systemic inequality, or extreme right-wing ideologies—this tool is not for you.
+
+We provide this platform to build up, not to tear down. By using voces.ch, you enter into a covenant to use this technology in the pursuit of collective liberation, democratic progress, and the protection of vulnerable groups.
+
+_(Note: This Declaration of Purpose is legally binding and forms an integral part of this software's License)._
+
 ## Core features
 
 voces.ch gives you everything you need for successful digital campaigning, without unnecessary complexity:
