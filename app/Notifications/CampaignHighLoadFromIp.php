@@ -19,6 +19,12 @@ class CampaignHighLoadFromIp extends Notification implements ShouldQueue
      */
     public function __construct($ipAddress, Campaign $campaign)
     {
+        // Remove last octet of IP address for privacy reasons
+        $ipAddressParts = explode('.', $ipAddress);
+        if (count($ipAddressParts) === 4) {
+            $ipAddressParts[3] = '0';
+            $ipAddress = implode('.', $ipAddressParts);
+        }
         $this->ipAddress = $ipAddress;
         $this->campaign = $campaign;
     }
