@@ -17,6 +17,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
+use Webbingbrasil\FilamentCopyActions\Actions\CopyAction;
 
 class CampaignPageForm
 {
@@ -93,11 +94,12 @@ class CampaignPageForm
                                 if (!$slug || !$isPublished) {
                                     return null;
                                 }
-                                return Action::make('open_slug')
-                                    ->label(__('Open campaign page'))
-                                    ->link()
-                                    ->url(config('app.act_url') . '/' . $slug)
-                                    ->openUrlInNewTab();
+                                $url = config('app.act_url') . '/' . $slug;
+                                return CopyAction::make()
+                                    ->copyable($url)
+                                    ->successNotificationMessage(__('Page URL copied to clipboard'))
+                                    ->label(__('Copy Page URL'));
+;
                             })
                             ->helperText(__('The slug is used to generate the URL for this campaign page. It must be unique across all campaign pages – even the ones you didn\'t create.')),
                         Select::make('theme')
