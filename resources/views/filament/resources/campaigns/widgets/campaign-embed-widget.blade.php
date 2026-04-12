@@ -27,7 +27,7 @@
         target: '#voces-campaign-widget',
         theme: '{$theme}',
         lang: '{$lang}',{$source}{$origin}
-        apiUrl: "{$apiUrl}",
+        apiBaseUrl: "{$apiUrl}",
     });
   });
 </script>
