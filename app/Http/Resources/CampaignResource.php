@@ -19,6 +19,7 @@ class CampaignResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'submit_label' => $this->submit_label,
+            'has_goal' => $this->has_goal,
             'goal' => $this->goal,
             'goal_type' => $this->goal_type,
             'goal_field' => $this->goal_field,
