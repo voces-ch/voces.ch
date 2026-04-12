@@ -65,14 +65,20 @@ class DatabaseSeeder extends Seeder
                 'title' => [
                     "de" => 'Kein Beton am Silbersee',
                     "fr" => 'Pas de béton au Silbersee',
+                    "it" => 'Nessun cemento al Silbersee',
+                    "en" => 'No concrete at Silbersee'
                 ],
                 'description' => [
                     "de" => '<p>Ein internationaler Investor plant den Bau eines gigantischen Einkaufszentrums direkt am naturbelassenen Nordufer des Silbersees. Wir müssen diesen ökologischen Wahnsinn stoppen!</p>',
-                    "fr" => '<p>Un investisseur international envisage la construction d\'un énorme centre commercial directement sur la rive nord naturelle du lac Silbersee. Nous devons arrêter ce folie écologique !</p>'
+                    "fr" => '<p>Un investisseur international envisage la construction d\'un énorme centre commercial directement sur la rive nord naturelle du lac Silbersee. Nous devons arrêter ce folie écologique !</p>',
+                    "it" => '<p>Un investitore internazionale sta pianificando la costruzione di un enorme centro commerciale direttamente sulla riva nord naturale del lago Silbersee. Dobbiamo fermare questa follia ecologica!</p>',
+                    "en" => '<p>An international investor is planning to build a gigantic shopping center right on the natural northern shore of Silbersee. We must stop this ecological madness!</p>'
                 ],
                 'submit_label' => [
                     "de" => 'Jetzt unterschreiben',
-                    "fr" => 'Signez maintenant'
+                    "fr" => 'Signez maintenant',
+                    "it" => 'Firma ora',
+                    "en" => 'Sign now'
                 ],
                 'has_goal' => true,
                 'goal' => 10000,
@@ -80,13 +86,17 @@ class DatabaseSeeder extends Seeder
                 "slug" => [
                     "de" => Str::slug('Kein Beton am Silbersee'),
                     "fr" => Str::slug('Pas de béton au Silbersee'),
+                    "it" => Str::slug('Nessun cemento al Silbersee'),
+                    "en" => Str::slug('No concrete at Silbersee')
                 ],
                 "success_type" => 'message',
                 "success_message" => [
                     "de" => '<h1>Danke für deine Unterstützung!</h1><p>Gemeinsam können wir den Bau am Silbersee verhindern. Teile die Kampagne jetzt mit deinen Freund:innen und in den sozialen Medien, um noch mehr Menschen zu mobilisieren!</p>',
-                    "fr" => '<h1>Merci pour votre soutien !</h1><p>Ensemble, nous pouvons empêcher la construction au Silbersee. Partagez la campagne dès maintenant avec vos amis et sur les réseaux sociaux pour mobiliser encore plus de personnes !</p>'
+                    "fr" => '<h1>Merci pour votre soutien !</h1><p>Ensemble, nous pouvons empêcher la construction au Silbersee. Partagez la campagne dès maintenant avec vos amis et sur les réseaux sociaux pour mobiliser encore plus de personnes !</p>',
+                    "it" => '<h1>Grazie per il tuo supporto!</h1><p>Insieme possiamo impedire la costruzione al Silbersee. Condividi la campagna ora con i tuoi amici e sui social media per mobilitare ancora più persone!</p>',
+                    "en" => '<h1>Thank you for your support!</h1><p>Together we can prevent the construction at Silbersee. Share the campaign now with your friends and on social media to mobilize even more people!</p>'
                 ],
-                "languages" => ['de', "fr"],
+                "languages" => ['de', "fr", "it", "en"],
             ]
         );
 
