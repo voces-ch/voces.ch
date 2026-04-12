@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CampaignPages\Pages;
 
 use App\Filament\Resources\CampaignPages\CampaignPageResource;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;

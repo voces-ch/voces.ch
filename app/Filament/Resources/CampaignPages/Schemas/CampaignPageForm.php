@@ -2,16 +2,20 @@
 
 namespace App\Filament\Resources\CampaignPages\Schemas;
 
+use App\Models\CampaignPage;
 use Athphane\FilamentEditorjs\Forms\Components\EditorjsTextField;
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Flex;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 
 class CampaignPageForm
@@ -25,6 +29,20 @@ class CampaignPageForm
                         Toggle::make('is_published')
                             ->label(__('Published'))
                             ->default(false)
+                            ->live()
+                            ->disabled(fn (Get $get) => $get("campaign_id") === null)
+                            ->afterStateUpdated(function (?CampaignPage $campaignPage, ?bool $state) {
+                                if (!$campaignPage || $state === null || $state === $campaignPage->is_published) {
+                                    return;
+                                }
+                                $campaignPage->is_published = $state;
+                                $campaignPage->save();
+                                Notification::make()
+                                    ->title($state ? __('Campaign page published') : __('Campaign page unpublished'))
+                                    ->body($state ? __('The campaign page is now visible to the public.') : __('The campaign page is now hidden from the public.'))
+                                    ->success()
+                                    ->send();
+                            })
                             ->columnSpanFull()
                             ->helperText(__('Only published campaign pages are visible to the public.')),
                         Select::make("campaign_id")
@@ -66,7 +84,21 @@ class CampaignPageForm
                             ->required(),
                         TextInput::make('slug')
                             ->required()
+                            ->prefix(config('app.act_url') . '/')
+                            ->suffixIcon(Heroicon::GlobeAlt)
                             ->label(__('Slug'))
+                            ->hintAction(function(Get $get) {
+                                $slug = $get('slug');
+                                $isPublished = $get('is_published');
+                                if (!$slug || !$isPublished) {
+                                    return null;
+                                }
+                                return Action::make('open_slug')
+                                    ->label(__('Open campaign page'))
+                                    ->link()
+                                    ->url(config('app.act_url') . '/' . $slug)
+                                    ->openUrlInNewTab();
+                            })
                             ->helperText(__('The slug is used to generate the URL for this campaign page. It must be unique across all campaign pages – even the ones you didn\'t create.')),
                         Select::make('theme')
                             ->options([
