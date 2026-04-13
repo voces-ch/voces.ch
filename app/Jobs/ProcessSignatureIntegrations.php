@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Campaign;
 use App\Models\Integration;
 use App\Models\Signature;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,12 +19,14 @@ class ProcessSignatureIntegrations implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public Signature $signature;
+    public ?Campaign $campaign;
     /**
      * Create a new job instance.
      */
-    public function __construct(Signature $signature)
+    public function __construct(Signature $signature, ?Campaign $campaign = null)
     {
         $this->signature = $signature;
+        $this->campaign = $campaign;
     }
 
     /**
@@ -31,7 +34,7 @@ class ProcessSignatureIntegrations implements ShouldQueue
      */
     public function handle(): void
     {
-        $integrations = Integration::where('campaign_id', $this->signature->campaign_id)
+        $integrations = Integration::where('campaign_id', $this->campaign->id)
             ->where('organization_id', $this->signature->organization_id)
             ->where('is_active', true)
             ->get();
