@@ -16,6 +16,7 @@
         "grantholle/laravel-altcha": "^2.2",
         "laravel-notification-channels/telegram": "^7.0",
         "laravel/framework": "^13.0",
+        "laravel/horizon": "^5.45",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.26",
         "laravel/tinker": "^3.0",

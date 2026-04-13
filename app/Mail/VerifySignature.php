@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Campaign;
 use App\Models\Signature;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,13 +16,14 @@ class VerifySignature extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
     public Signature $signature;
-
+    public Campaign $campaign;
     /**
      * Create a new message instance.
      */
-    public function __construct(Signature $signature)
+    public function __construct(Signature $signature, Campaign $campaign)
     {
         $this->signature = $signature;
+        $this->campaign = $campaign;
     }
 
     /**
@@ -43,7 +45,7 @@ class VerifySignature extends Mailable implements ShouldQueue
             view: 'mail.verify-signature',
             with: [
                 'verificationUrl' => url("/verify/signature/{$this->signature->uuid}/{$this->signature->verification_token}"),
-                'campaignName' => $this->signature->campaign->title,
+                'campaignName' => $this->campaign ? $this->campaign->title : $this->signature->campaign->title,
             ],
         );
     }

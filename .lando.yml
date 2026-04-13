@@ -15,5 +15,6 @@ services:
 proxy:
   appserver:
     - voces.lndo.site
+    - horizon.voces.lndo.site
   mailhog:
     - mailhog.voces.lndo.site

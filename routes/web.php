@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\SignatureController;
 use Illuminate\Support\Facades\Route;
 
+Route::redirect('/', '/admin')->name('home');
+
 Route::get('/demo/widget/view', function () {
     if (app()->environment('production')) {
         abort(404);

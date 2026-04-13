@@ -124,12 +124,14 @@ class CampaignController extends Controller
             $signature->token_expiration = now()->addHours(48);
             $signature->save();
             $to = $validated['payload']['email'] ?? null;
-            Mail::to($to)
+            $message = (new VerifySignature($signature, $campaign))
                 ->locale($locale)
-                ->send(new VerifySignature($signature));
+                ->onQueue('emails');
+            Mail::to($to)
+                ->send($message);
         }
 
-        ProcessSignatureIntegrations::dispatch($signature);
+        ProcessSignatureIntegrations::dispatch($signature, $campaign)->onQueue('default');
 
         return response()->json([
             'status' => 'success',
