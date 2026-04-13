@@ -20,8 +20,18 @@ class CampaignPageResource extends JsonResource
             'locale' => $this->locale,
             'is_published' => $this->is_published,
             'theme' => $this->theme,
+            'heroine_image_url' => $this->getFirstMediaUrl('heroine_image'),
             'content' => $this->content,
-            'campaign_uuid' => $this->campaign->uuid,
+            'campaign' => [
+                'uuid' => $this->campaign->uuid,
+                'title' => $this->campaign->title,
+                'description' => $this->campaign->description,
+            ],
+            'organization' => [
+                'uuid' => $this->campaign->organization->uuid,
+                'name' => $this->campaign->organization->name,
+                'logo_url' => $this->campaign->organization->getFirstMediaUrl('logo'),
+            ],
         ];
     }
 }

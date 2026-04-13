@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Campaign;
-use App\Models\Organization; // Adjust this if your tenant model is named differently (e.g., Tenant, Workspace)
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         );
 
         if (! $hostUser->organizations()->where('organization_id', $hostOrg->id)->exists()) {
-            $hostUser->organizations()->attach($hostOrg->id);
+                $hostUser->organizations()->attach($hostOrg->id);
         }
 
         $partnerUser = User::firstOrCreate(
@@ -197,6 +197,9 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Seeding development environment and partnership with Signatures...');
         $this->call(SignatureSeeder::class);
+
+        $this->command->info('Seeding campaign pages...');
+        $this->call(CampaignPagesTableSeeder::class);
 
         $this->command->info('Dev environment and partnerships seeded successfully! 🚀');
         $this->command->table(

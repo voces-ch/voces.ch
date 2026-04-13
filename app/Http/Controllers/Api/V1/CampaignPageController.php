@@ -14,7 +14,9 @@ class CampaignPageController extends Controller
         if (! $campaignPage->is_published) {
             abort(404);
         }
+        app()->setLocale($campaignPage->locale);
         $campaignPage->load('campaign');
+        $campaignPage->campaign->load('organization');
         return new CampaignPageResource($campaignPage);
     }
 }

@@ -7,6 +7,7 @@ use Athphane\FilamentEditorjs\Forms\Components\EditorjsTextField;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -83,6 +84,19 @@ class CampaignPageForm
                                 return $options;
                             })
                             ->required(),
+                        Select::make('theme')
+                            ->options([
+                                'minimal' => 'Minimal',
+                            ])
+                            ->label(__('Theme'))
+                            ->default('minimal')
+                            ->required(),
+                        SpatieMediaLibraryFileUpload::make('heroine_image')
+                            ->collection('heroine_image')
+                            ->disk("public")
+                            ->label(__('Heroine Image'))
+                            ->required()
+                            ->helperText(__('Upload a heroine image for this campaign page. This will be displayed at the top of the page. Recommended dimensions: 1200x600 pixels.')),
                         TextInput::make('slug')
                             ->required()
                             ->prefix(config('app.act_url') . '/')
@@ -101,15 +115,8 @@ class CampaignPageForm
                                     ->label(__('Copy Page URL'));
 ;
                             })
+                            ->columnSpanFull()
                             ->helperText(__('The slug is used to generate the URL for this campaign page. It must be unique across all campaign pages – even the ones you didn\'t create.')),
-                        Select::make('theme')
-                            ->options([
-                                'minimal' => 'Minimal',
-                                'impact' => 'Impact',
-                            ])
-                            ->label(__('Theme'))
-                            ->default('minimal')
-                            ->required(),
                     ])
                     ->columns(2)
                     ->collapsible()

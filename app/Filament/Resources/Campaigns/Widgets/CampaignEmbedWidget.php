@@ -58,7 +58,7 @@ class CampaignEmbedWidget extends Widget implements HasForms
         // check if the current tenant is the host or a partner and set the source accordingly
         $defaultSource = Filament::getTenant()?->id === $this->record->organization_id ? 'organic' : $this->record->campaignPartners()->where('organization_id', Filament::getTenant()?->id)->value('source_slug') ?? 'organic';
         $this->form->fill([
-            'language' => $this->record->languages[0] ?? 'de',
+            'locale' => $this->record->languages[0] ?? 'de',
             'source' => $defaultSource,
             'theme' => 'minimal',
             'version' => self::getNewestVersionedWidget(),
@@ -77,7 +77,7 @@ class CampaignEmbedWidget extends Widget implements HasForms
 
         return $schema
             ->schema([
-                Select::make('language')
+                Select::make('locale')
                     ->options($availableLocales)
                     ->live(),
                 Select::make('theme')
