@@ -87,6 +87,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Horizon user->email based authentication
+    |--------------------------------------------------------------------------
+    |
+    | This is the list of email addresses that are allowed to access Horizon.
+    | HORIZON_ALLOWED_EMAILS should be a comma-separated list of email addresses.
+    |
+    */
+    'allowed_emails' => env('HORIZON_ALLOWED_EMAILS', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Wait Time Thresholds
     |--------------------------------------------------------------------------
     |
@@ -97,8 +108,8 @@ return [
     */
 
     'waits' => [
-        'redis:default' => 10,
-        'redis:emails' => 10,
+        'redis:default' => 60,
+        'redis:emails' => 60,
     ],
 
     /*

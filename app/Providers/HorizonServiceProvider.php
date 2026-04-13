@@ -8,6 +8,14 @@ use Laravel\Horizon\HorizonApplicationServiceProvider;
 
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
+    protected function allowedEmails(): array
+    {
+        return collect(explode(',', (string) config('horizon.allowed_emails', '')))
+            ->map(fn (string $email) => trim($email))
+            ->filter()
+            ->values()
+            ->all();
+    }
     /**
      * Bootstrap any application services.
      */
@@ -15,12 +23,9 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         parent::boot();
 
-        $allowedEmails = explode(',', env('HORIZON_ALLOWED_EMAILS', ''));
+        $allowedEmails = $this->allowedEmails();
         foreach ($allowedEmails as $email) {
-            $email = trim($email);
-            if (!empty($email)) {
-                Horizon::routeMailNotificationsTo($email);
-            }
+            Horizon::routeMailNotificationsTo($email);
         }
     }
 
@@ -32,7 +37,8 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ($user = null) {
-            return in_array(optional($user)->email, explode(',', env('HORIZON_ALLOWED_EMAILS', '')));
+            return isset($user?->email)
+                && in_array($user->email, $this->allowedEmails(), true);
         });
     }
 }

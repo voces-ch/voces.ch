@@ -16,11 +16,11 @@ class VerifySignature extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
     public Signature $signature;
-    public ?Campaign $campaign;
+    public Campaign $campaign;
     /**
      * Create a new message instance.
      */
-    public function __construct(Signature $signature, ?Campaign $campaign = null)
+    public function __construct(Signature $signature, Campaign $campaign)
     {
         $this->signature = $signature;
         $this->campaign = $campaign;
