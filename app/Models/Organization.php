@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Ramsey\Uuid\Uuid;
 use Spatie\Translatable\HasTranslations;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 #[ObservedBy([OrganizationObserver::class])]
-class Organization extends Model
+class Organization extends Model implements HasMedia
 {
-    use HasFactory, HasUuids, HasTranslations;
+    use HasFactory, HasUuids, HasTranslations, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.

@@ -126,7 +126,7 @@
             window.voces.widget({
                 campaignUuid: "c7439b13-cabe-4daf-8f21-1f1b2980edd6",
                 target: "#voces-dev-container",
-                lang: '{{ request()->input("lang") ?? "de" }}',
+                locale: '{{ request()->input("locale") ?? "de" }}',
                 theme: '{{ request()->input("theme") ?? "minimal" }}',
                 apiBaseUrl: "{{ config('app.url') }}/api/v1",
             });

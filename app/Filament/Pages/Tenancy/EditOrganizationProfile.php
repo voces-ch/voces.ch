@@ -10,6 +10,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -50,6 +51,12 @@ class EditOrganizationProfile extends EditTenantProfile
 
                             $set('slug', Str::slug($state));
                         }),
+
+                        SpatieMediaLibraryFileUpload::make('Logo')
+                            ->collection('logo')
+                            ->disk("public")
+                            ->label(__('Organization Logo'))
+                            ->helperText(__('Upload a logo for your organization. This will be displayed on your profile and in campaign listings. Recommended dimensions: 300x300 pixels.')),
 
                     TextInput::make('slug')
                         ->required()

@@ -5,7 +5,7 @@
 
         @php
             $uuid = $record->uuid;
-            $lang = $data['language'] ?? 'de';
+            $locale = $data['locale'] ?? 'de';
             $source = $data['source'] === 'organic' ? '' : "\n        source: '{$data['source']}',";
             $originValue = $data['origin'] ?? '';
             $origin = blank($originValue) ? '' : "\n        origin: '{$originValue}',";
@@ -26,7 +26,7 @@
         campaignUuid: '{$uuid}',
         target: '#voces-campaign-widget',
         theme: '{$theme}',
-        lang: '{$lang}',{$source}{$origin}
+        locale: '{$locale}',{$source}{$origin}
         apiBaseUrl: "{$apiUrl}",
     });
   });
