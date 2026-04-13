@@ -19,11 +19,11 @@ class ProcessSignatureIntegrations implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public Signature $signature;
-    public ?Campaign $campaign;
+    public Campaign $campaign;
     /**
      * Create a new job instance.
      */
-    public function __construct(Signature $signature, ?Campaign $campaign = null)
+    public function __construct(Signature $signature, Campaign $campaign)
     {
         $this->signature = $signature;
         $this->campaign = $campaign;
