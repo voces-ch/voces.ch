@@ -36,9 +36,9 @@ class CampaignInfolist
                                     ->schema([
                                         TextEntry::make('title')
                                             ->label(__('Title')),
-                                        TextEntry::make('uuid')
-                                            ->copyable()
-                                            ->label(__('UUID')),
+                                        TextEntry::make('description')
+                                            ->label(__('Description'))
+                                            ->html(),
                                         IconEntry::make('is_active')
                                             ->boolean()
                                             ->label(__('Active')),
@@ -90,6 +90,17 @@ class CampaignInfolist
                                             ->label(__('Success URL'))
                                             ->visible(fn (Get $get) => $get('success_type') === 'redirect'),
                                     ]),
+                                Tab::make(__('Email verification'))
+                                    ->schema([
+                                        IconEntry::make('is_email_verification_enabled')
+                                            ->boolean()
+                                            ->label(__('Requires Email Verification?')),
+                                        TextEntry::make('email_verification_field')
+                                            ->label(__('Verification Email Field Name'))
+                                            ->badge()
+                                            ->helperText(__('The name of the email field that requires verification.')),
+                                    ])
+                                    ->columns(2)
                             ])
                             ->columnSpan(['default' => 2, 'md' => 2]),
                         Tabs::make("Meta")

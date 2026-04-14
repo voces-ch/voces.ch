@@ -35,24 +35,14 @@ class CampaignForm
                             ->schema([
                                 Toggle::make('is_active')
                                     ->default(true)
-                                    ->columnSpanFull()
                                     ->label(__('Active'))
                                     ->required(),
-                                TextInput::make('title')
-                                    ->required()
-                                    ->label(__('Title'))
-                                    ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
-                                TextInput::make('submit_label')
-                                    ->label(__('Submit Button Text'))
-                                    ->default(fn () => LocaleHelper::getDefaultSubmitButtonText($campaign))
-                                    ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
                                 Toggle::make('is_data_pooled')
                                     ->label(__('Pool Campaign Data'))
                                     ->helperText(__('If enabled, you (the Host) will have access to all signee data collected by your Partners.'))
                                     ->default(false)
                                     ->disabled()
                                     ->dehydrated()
-                                    ->columnSpanFull()
                                     ->hintActions([
                                         Action::make('enable_pooling')
                                             ->label(__('Enable Pooling'))
@@ -76,7 +66,19 @@ class CampaignForm
                                                 $set('is_data_pooled', false);
                                             }),
 
-                                    ])
+                                    ]),
+                                TextInput::make('title')
+                                    ->required()
+                                    ->label(__('Title'))
+                                    ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
+                                TextInput::make('submit_label')
+                                    ->label(__('Submit Button Text'))
+                                    ->default(fn () => LocaleHelper::getDefaultSubmitButtonText($campaign))
+                                    ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
+                                RichEditor::make('description')
+                                    ->label(__('Description'))
+                                    ->columnSpanFull()
+                                    ->translatable(supportedLocales: LocaleHelper::getLocales($campaign)),
                                 ]),
                             Tab::make(__('Success Logic'))
                                 ->schema([
